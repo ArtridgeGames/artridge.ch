@@ -1,4 +1,5 @@
 const layouts = [
+  //squares
   {
     dimensions: '3x3',
     exclude: []
@@ -39,6 +40,7 @@ const layouts = [
     dimensions: '12x12',
     exclude: []
   },
+  //rectangles
   {
     dimensions: '3x4',
     exclude: []
@@ -55,6 +57,19 @@ const layouts = [
     dimensions: '3x7',
     exclude: []
   },
+  //diamond
+  {
+    dimensions: '3x3',
+    exclude: [0,2,6,8]
+  },
+  {
+    dimensions: '5x5',
+    exclude: [0,1,3,4,5,9,15,19,20,21,23,24]
+  },
+  {
+    dimensions: '7x7',
+    exclude: [0,1,2,4,5,6,7,8,12,13,14,20,28,34,35,36,40,41,42,43,44,46,47,48]
+  },
   {
     dimensions: '3x3',
     exclude: [3,5,6,8]
@@ -66,10 +81,6 @@ const layouts = [
   {
     dimensions: '3x3',
     exclude: [1,3,5,7]
-  },
-  {
-    dimensions: '3x3',
-    exclude: [0,2,6,8]
   },
   {
     dimensions: '3x3',
@@ -224,10 +235,6 @@ const layouts = [
     exclude: [0,2,4,10,12,14]
   },
   {
-    dimensions: '5x5',
-    exclude: [0,1,3,4,5,9,15,19,20,21,23,24]
-  },
-  {
     dimensions: '7x7',
     exclude: [8,9,11,12,15,19,29,33,36,37,39,40]
   },
@@ -302,10 +309,6 @@ const layouts = [
   {
     dimensions: '5x6',
     exclude: [2,6,8,11,12,13,16,17,18,21,23,27]
-  },
-  {
-    dimensions: '7x7',
-    exclude: [0,1,2,4,5,6,7,8,12,13,14,20,28,34,35,36,40,41,42,43,44,46,47,48]
   },
   {
     dimensions: '7x9',
