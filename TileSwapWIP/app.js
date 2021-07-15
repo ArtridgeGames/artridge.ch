@@ -40,6 +40,10 @@ const layouts = [
     exclude: []
   },
   {
+    dimensions: '3x4',
+    exclude: []
+  },
+  {
     dimensions: '3x5',
     exclude: []
   },
@@ -47,7 +51,11 @@ const layouts = [
     dimensions: '3x6',
     exclude: []
   },
-    {
+  {
+    dimensions: '3x7',
+    exclude: []
+  },
+  {
     dimensions: '3x3',
     exclude: [3,5,6,8]
   },
