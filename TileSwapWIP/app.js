@@ -70,6 +70,19 @@ const layouts = [
     dimensions: '7x7',
     exclude: [0,1,2,4,5,6,7,8,12,13,14,20,28,34,35,36,40,41,42,43,44,46,47,48]
   },
+  //circle
+  {
+    dimensions: '6x6',
+    exclude: [0,1,4,5,6,11,24,29,30,31,34,35]
+  },
+  {
+    dimensions: '7x7',
+    exclude: [0,1,5,6,7,13,35,41,42,43,47,48]
+  },
+  {
+    dimensions: '8x8',
+    exclude: [0,1,6,7,8,15,48,55,56,57,62,63]
+  },
   {
     dimensions: '3x3',
     exclude: [3,5,6,8]
@@ -237,18 +250,6 @@ const layouts = [
   {
     dimensions: '7x7',
     exclude: [8,9,11,12,15,19,29,33,36,37,39,40]
-  },
-  {
-    dimensions: '7x7',
-    exclude: [0,1,5,6,7,13,35,41,42,43,47,48]
-  },
-    {
-    dimensions: '6x6',
-    exclude: [0,1,4,5,6,11,24,29,30,31,34,35]
-  },
-  {
-    dimensions: '8x8',
-    exclude: [0,1,6,7,8,15,48,55,56,57,62,63]
   },
   {
     dimensions: '5x4',
