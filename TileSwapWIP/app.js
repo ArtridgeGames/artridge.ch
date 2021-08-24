@@ -471,20 +471,22 @@ const puzzles = [
     ]
   }
 ]
+for (const puzzle of puzzles) puzzle.completed = false;
 
 const dirx = [0,0,0,1,-1,-1,1,-1,1];
 const diry = [0,1,-1,0,0,-1,-1,1,1];
 const copy = (val) => JSON.parse(JSON.stringify(val));
 
-let currentLayout = copy(layouts[0]);
-let currentLayoutIndex = 0;
 let counter = 0;
 
 const app = new Vue({
   el: '#app',
   data: {
     screen: 'menu',
+    score: 0,
     currentChallenge: '',
+    isRandomFreeplay: false,
+    currentLayout: copy(layouts[0]),
     gameModes: [
       {
         title: 'freeplay',
@@ -501,7 +503,7 @@ const app = new Vue({
       {
         title: 'challenges',
         fn: () => {
-          app.screen = 'challenges'
+          app.screen = 'challenge-selection'
         }
       }
     ]
@@ -529,24 +531,22 @@ const app = new Vue({
 
 function updateLayout(layout) {
 
-  currentLayout = layout || currentLayout;
+  app.currentLayout = layout || app.currentLayout;
 
   updateTileSize();
-
-  const tiles = document.querySelectorAll('button.tile');
 
   let tileIndex = 0;
   const container = document.querySelector('#container');
   container.innerHTML = '';
-  for (let i = 0; i < currentLayout.height; i++) {
+  for (let i = 0; i < app.currentLayout.height; i++) {
     const row = document.createElement('div');
     row.classList.add('row');
-    for (let j = 0; j < currentLayout.width; j++) {
+    for (let j = 0; j < app.currentLayout.width; j++) {
       let tile = document.createElement('button');
       tile.classList.add('tile');
       tile.setAttribute('data-index', tileIndex);
 
-      if (currentLayout.exclude.includes(tileIndex)) {
+      if (app.currentLayout.exclude.includes(tileIndex)) {
         tile.setAttribute('data-disabled', true);
       } else {
         const index = tileIndex
@@ -569,10 +569,10 @@ function press(index, preventAnim, preventWin) {
   const tiles = document.querySelectorAll('button.tile');
 
   for (let i = 0; i < dirx.length; i++) {
-    var tileX = (index % currentLayout.width) + diry[i];
-    var tileY = Math.floor(index / currentLayout.width) + dirx[i];
-    if (tileX >= 0 && tileX < currentLayout.width && tileY >= 0 && tileY < currentLayout.height) {
-      const tile = tiles[(tileY * currentLayout.width) + tileX];
+    var tileX = (index % app.currentLayout.width) + diry[i];
+    var tileY = Math.floor(index / app.currentLayout.width) + dirx[i];
+    if (tileX >= 0 && tileX < app.currentLayout.width && tileY >= 0 && tileY < app.currentLayout.height) {
+      const tile = tiles[(tileY * app.currentLayout.width) + tileX];
       const col = tile.getAttribute('data-col');
       if (col === 'black') {
         tile.setAttribute('data-col', 'white');
@@ -591,7 +591,7 @@ function press(index, preventAnim, preventWin) {
   let won = true;
   if (app.screen === 'puzzles') {
 
-    won = JSON.stringify(getGrid()) === JSON.stringify(currentLayout.target);
+    won = JSON.stringify(getGrid()) === JSON.stringify(app.currentLayout.target);
     
     updateMovesRemaining(won);
     
@@ -615,6 +615,22 @@ function press(index, preventAnim, preventWin) {
 
       counter = 0;
     }, 50);
+
+    switch (app.screen) {
+      case 'freeplay':
+        app.score++;
+        break;
+    
+      case 'puzzles':
+        app.score++;
+        puzzles[app.currentLayout.puzzleIndex].completed = true;
+        document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
+        break;
+
+      case 'challenges':
+
+        break;
+    }
   }
 }
 
@@ -636,10 +652,13 @@ function closePopup(i) {
 window.setInterval(() => {
   const slider = document.getElementById('slider');
   const difficulties = ['very easy', 'easy', 'normal', 'hard', 'very hard'];
-  document.getElementById('difficulty').innerHTML = difficulties[Math.floor((slider.value - 1) / (slider.max/difficulties.length))];
+  document.getElementById('difficulty').innerHTML = difficulties[Math.floor((slider.value - 1) / (slider.max / difficulties.length))];
 }, 50)
 
 function randomize(preventAnim) {
+
+  if (app.isRandomFreeplay) setLayout(Math.floor(Math.random() * layouts.length));
+
   updateLayout();
 
   const tiles = document.querySelectorAll('button.tile');
@@ -648,12 +667,14 @@ function randomize(preventAnim) {
     tiles[i].setAttribute('data-col', 'white');
   }
 
+  const sliderValue = document.getElementById('slider').value + Math.floor(Math.random() * 4);
+
   const previousTiles = [];
-  for (let i = 0; i < document.getElementById('slider').value; i++) {
+  for (let i = 0; i < sliderValue; i++) {
     let index;
     while (true) {
-      index = Math.floor(Math.random() * currentLayout.width * currentLayout.height);
-      if (!currentLayout.exclude.includes(index) && !previousTiles.includes(index)) {
+      index = Math.floor(Math.random() * app.currentLayout.width * app.currentLayout.height);
+      if (!app.currentLayout.exclude.includes(index) && !previousTiles.includes(index)) {
         press(index, preventAnim, true);
         previousTiles.push(index);
         if (previousTiles.length > 3) previousTiles.splice(0,1);
@@ -674,7 +695,7 @@ function randomize(preventAnim) {
 }
 
 function setLayout(i) {
-  currentLayout = copy(layouts[i === undefined ? Math.floor(Math.random() * layouts.length) : i])
+  app.currentLayout = copy(layouts[i === undefined ? Math.floor(Math.random() * layouts.length) : i])
   updateLayout();
 }
 
@@ -714,7 +735,7 @@ if ('ontouchstart' in document.documentElement) {
 
 function updateTileSize() {
   if (window.innerWidth > window.innerHeight) {
-    const width = 1 / Math.max(currentLayout.width, 6) * 450 * Math.max(window.innerWidth / 1500, 1);
+    const width = 1 / Math.max(app.currentLayout.width, 6) * 450 * Math.max(window.innerWidth / 1500, 1);
     document.documentElement.style.setProperty('--tile-size', width + 'px');
   }
 }
@@ -722,10 +743,21 @@ function updateTileSize() {
 (() => {
   let layoutsContainer = document.querySelector('.screen.layouts .layout-container');
 
+  const el = document.createElement('div');
+  el.textContent = '?';
+  el.classList.add('button');
+  el.addEventListener('click', () => {
+    app.isRandomFreeplay = true;
+    app.openScreen('freeplay');
+    randomize(true);
+  });
+
+  layoutsContainer.appendChild(el);
+
   for (let i = 0; i < layouts.length; i++) {
     const layout = layouts[i];
     
-    let el = document.createElement('div');
+    const el = document.createElement('div');
     el.classList.add('button');
     
     let index = 0;
@@ -749,6 +781,7 @@ function updateTileSize() {
     }
 
     el.addEventListener('click', () => {
+      app.isRandomFreeplay = false;
       app.openScreen('freeplay')
       setLayout(i);
       randomize(true);
@@ -760,7 +793,7 @@ function updateTileSize() {
 
 (() => {
   const container = document.querySelector('.screen.puzzles .layout-container');
-  for (const puzzle of puzzles) {
+  for (const [i, puzzle] of puzzles.entries()) {
 
     let index = 0;
     const exclude = [];
@@ -812,6 +845,7 @@ function updateTileSize() {
       layout.target = puzzle.target;
       layout.base = puzzle.base;
       layout.moves = puzzle.moves;
+      layout.puzzleIndex = i;
       
       updateLayout(layout);
       setState(puzzle.base);
@@ -846,7 +880,7 @@ function updateTileSize() {
 
 function updateMovesRemaining(won) {
   const h1 = document.querySelector('.puzzle-info h1');
-  const movesRemaining = currentLayout.moves - counter;
+  const movesRemaining = app.currentLayout.moves - counter;
 
   if (movesRemaining === 0 && !won) {
     document.querySelectorAll('.popup')[1].style.transform = 'translate(-50%,-50%) scale(1)';
@@ -860,7 +894,7 @@ function updateMovesRemaining(won) {
 }
 
 function retryPuzzle() {
-  setState(currentLayout.base);
+  setState(app.currentLayout.base);
   counter = 0;
 
   updateMovesRemaining();
@@ -868,6 +902,10 @@ function retryPuzzle() {
 
 function selectChallenge(challenge) {
   app.currentChallenge = challenge;
+}
+
+function selectChallengeDifficulty(difficulty) {
+  app.currentChallengeDifficulty = difficulty;
 }
 
 function setAll(white) {
@@ -1022,7 +1060,7 @@ function getGrid() {
 }
 
 function getAllStates() {
-  const size = currentLayout.width * currentLayout.height;
+  const size = app.currentLayout.width * app.currentLayout.height;
   const max = parseInt("1".repeat(size), 2);
   const states = [];
   for (let i = 0; i < max; i++) {
@@ -1033,7 +1071,7 @@ function getAllStates() {
 
 function stringToGrid(str) {
   const grid = [];
-  const w = currentLayout.width;
+  const w = app.currentLayout.width;
   for (let i = 0; i < str.length; i += w) {
     grid.push(str.slice(i, i + w).split('').map(e => parseInt(e)));
   }

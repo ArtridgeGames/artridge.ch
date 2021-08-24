@@ -68,14 +68,17 @@
 
       <div class="screen layouts" v-show="screen === 'layouts'">
         <button class='back' @click='openScreen("menu")'>back</button>
-        <h1 class="screen-header">select a layout</h1>
+        <div class="screen-header">
+          <p>select a layout</p>
+          <p>{{score}}</p>
+        </div>
         <div class='layout-container'>
 
         </div>
       </div>
 
-      <div class="screen freeplay" v-show="screen === 'freeplay' || screen === 'puzzles'">
-        <button class='back' @click='openScreen(screen === "freeplay" ? "layouts" : "puzzles-selection")'>back</button>
+      <div class="screen freeplay" v-show="screen === 'freeplay' || screen === 'puzzles' || screen === 'challenges'">
+        <button class='back' @click='openScreen(screen === "freeplay" ? "layouts" : (screen === "puzzles" ? "puzzles-selection" : "challenge-difficulty-selection"))'>back</button>
         
         <div class="puzzle-target" v-show="screen === 'puzzles'">
 
@@ -97,7 +100,7 @@
           </div>
           <div class="difficulty">
             <h2>difficulty - <span id="difficulty"></span></h2>
-            <input class="slider" id="slider" value="10" type="range" min="2" max="30" step="1"></input>
+            <input class="slider" id="slider" value="10" type="range" min="2" :max="currentLayout.width * currentLayout.height - currentLayout.exclude.length" step="1"></input>
           </div>
         </div>
 
@@ -117,36 +120,42 @@
 
       <div class="screen puzzles" v-show="screen === 'puzzles-selection'">
         <button class='back' @click='openScreen("menu")'>back</button>
-        <h1 class="screen-header">select a puzzle</h1>
+        <div class="screen-header">
+          <p>select a puzzle</p>
+          <p>{{score}}</p>
+        </div>
 
         <div class="layout-container">
 
         </div>
       </div>
 
-      <div class="screen challenges" v-show="screen === 'challenges'">
+      <div class="screen challenge-selection" v-show="screen === 'challenge-selection'">
         <button class='back' @click='openScreen("menu")'>back</button>
-        <h1 class="screen-header">select a challenge</h1>
+        <div class="screen-header">
+          <p>select a challenge</p>
+          <p>{{score}}</p>
+        </div>
 
         <div class="buttons">
-          <button @click="openScreen('challenge-selection'); selectChallenge('sprint')">sprint</button>
-          <button @click="openScreen('challenge-selection'); selectChallenge('normal')">normal</button>
-          <button @click="openScreen('challenge-selection'); selectChallenge('marathon')">marathon</button>
-          <button @click="openScreen('challenge-selection'); selectChallenge('endurance')">endurance</button>
+          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('sprint')">sprint</button>
+          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('normal')">normal</button>
+          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('marathon')">marathon</button>
+          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('endurance')">endurance</button>
         </div>
 
       </div>
 
-      <div class="screen challenge-selection" v-show="screen === 'challenge-selection'">
-        <button class='back' @click='openScreen("challenges")'>back</button>
+      <div class="screen challenge-difficulty-selection" v-show="screen === 'challenge-difficulty-selection'">
+        <button class='back' @click='openScreen("challenge-selection")'>back</button>
         <h1 class="screen-header">{{currentChallenge}}</h1>
 
         <div class="buttons">
-          <button @click="openScreen('freeplay');">easy</button>
-          <button @click="openScreen('freeplay');">medium</button>
-          <button @click="openScreen('freeplay');">hard</button>
-          <button @click="openScreen('freeplay');">expert</button>
-          <button @click="openScreen('freeplay');" v-show="currentChallenge !== 'endurance'">endless</button>
+          <button @click="openScreen('challenges'); selectChallengeDifficulty(0);">easy</button>
+          <button @click="openScreen('challenges'); selectChallengeDifficulty(1);">medium</button>
+          <button @click="openScreen('challenges'); selectChallengeDifficulty(2);">hard</button>
+          <button @click="openScreen('challenges'); selectChallengeDifficulty(3);">expert</button>
+          <button @click="openScreen('challenges'); selectChallengeDifficulty(4);" v-show="currentChallenge !== 'endurance'">endless</button>
         </div>
       </div>
 

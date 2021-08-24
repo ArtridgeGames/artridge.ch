@@ -177,7 +177,7 @@ h2 {
   width: 100px;
   height: 100px;
   background-color: white;
-  color: white;
+  color: black;
   margin: 5px;
   padding: 0;
   border-radius: 5px;
@@ -202,14 +202,18 @@ h2 {
   position: relative;
 }
 
-.screen.challenges .buttons, .screen.challenge-selection .buttons {
+.screen.challenge-difficulty-selection .buttons, .screen.challenge-selection .buttons {
   margin: 0 auto;
   width: 300px;
 }
 
-.screen.challenges .buttons button, .screen.challenge-selection .buttons button {
+.screen.challenge-difficulty-selection .buttons button, .screen.challenge-selection .buttons button {
   width: 100%;
   margin: 5px 0;
+}
+
+.screen.puzzles .button.completed {
+  background-color: #DAC778;
 }
 
 .title {
@@ -232,6 +236,10 @@ h2 {
   text-align: center;
   color: white;
   font-size: var(--title-size);
+}
+
+.screen-header p {
+  margin: 10px;
 }
 
 #buttons {
