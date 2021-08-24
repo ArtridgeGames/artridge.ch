@@ -79,7 +79,7 @@ function getPageTopLeft(el) {
 function updateBtns() {
   var canvasContainer = document.getElementById("canvas");
   var rect = canvasContainer.getBoundingClientRect();
-  var distance = rect.right / (isLandscape() && 4.85 || 2.2);
+  distance = rect.right / (isLandscape() && 4.85 || 2.2);
 
   if (isLandscape() && navigator.userAgent.match(/iPhone/i)) {
     distance = rect.right / 3.6;
@@ -276,7 +276,7 @@ for (const btn of picoButtons) {
     }
   });
 }
-
+/*
 (() => {
   const domains = [
     'https://www.coolmathgames.com',
@@ -303,4 +303,4 @@ for (const btn of picoButtons) {
   if (shouldRedirect) {
     window.location.href = 'https://www.coolmathgames.com';
   }
-})();
+})();*/

@@ -81,13 +81,17 @@ return {
     };
 }
 
+var canvasContainer = document.getElementById("canvas");
+var rect = canvasContainer.getBoundingClientRect();
+var distance = rect.right / (isLandscape() && 4.85 || 2.2);
+
 window.setInterval(updateBtns, 1e3);
 
 const trackpad = document.getElementById("trackpad");
 function updateBtns() {
   var canvasContainer = document.getElementById("canvas");
   var rect = canvasContainer.getBoundingClientRect();
-  var distance = rect.right / (isLandscape() && 4.85 || 2.2);
+  distance = rect.right / (isLandscape() && 4.85 || 2.2);
 
   if (isLandscape() && navigator.userAgent.match(/iPhone/i)) {
     distance = rect.right / 3.6;
