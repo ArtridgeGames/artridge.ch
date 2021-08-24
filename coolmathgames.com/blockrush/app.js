@@ -276,7 +276,7 @@ for (const btn of picoButtons) {
     }
   });
 }
-/*
+
 (() => {
   const domains = [
     'https://www.coolmathgames.com',
@@ -303,4 +303,4 @@ for (const btn of picoButtons) {
   if (shouldRedirect) {
     window.location.href = 'https://www.coolmathgames.com';
   }
-})();*/
+})();
