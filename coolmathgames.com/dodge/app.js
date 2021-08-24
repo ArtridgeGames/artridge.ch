@@ -302,15 +302,20 @@ function switchInput() {
     },100)
   } else {
     trackIsRight = !trackIsRight;
+    const gamepad = document.getElementById("gamepad");
     if (trackIsRight) {
       buttons.style.left = "11px"
-      trackpad.style.right = "11px"
       buttons.style.right = "unset"
+      trackpad.style.right = "11px"
       trackpad.style.left = "unset"
+      gamepad.style.right = "11px"
+      gamepad.style.left = "unset"
     } else {
       trackpad.style.left = "11px"
-      buttons.style.right = "11px"
       trackpad.style.right = "unset"
+      gamepad.style.left = "11px"
+      gamepad.style.right = "unset"
+      buttons.style.right = "11px"
       buttons.style.left = "unset"
     }
   }

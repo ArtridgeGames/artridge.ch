@@ -720,6 +720,33 @@ end
 
 function checkhs()
  if score>geths() then
+  for i,h in pairs(highscores) do
+   if iscurrenths(h) then
+    h[1]=ceil(score)
+    store(i-1,score)
+    newhs=true
+   end
+  end
+ end
+end
+
+function geths()
+ for h in all(highscores) do
+  if iscurrenths(h) then
+   return h[1]
+  end
+ end
+end
+
+function iscurrenths(h)
+ return h[2][1]==smallsettings[2]
+ and h[2][2]==smallsettings[3]
+ and h[2][3]==smallsettings[4]
+end
+
+--[[
+function checkhs()
+ if score>geths() then
   for i=0,11 do
    if iscurrenths(i+1) then
     store(i,ceil(score))
@@ -741,7 +768,7 @@ function iscurrenths(h)
  return smallsettings[2]==highscores[h][1]
  and smallsettings[3]==highscores[h][2]
  and smallsettings[4]==highscores[h][3]
-end
+end]]
 
 function die()
  sfx(62)
