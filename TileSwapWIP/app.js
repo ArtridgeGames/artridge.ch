@@ -376,6 +376,7 @@ const puzzles = [
     ]
   },
   {
+    //solution : 0; 5; 10; 15 (All Tiles)
     moves: 4,
     base: [
       [1,2,2,2],
@@ -408,7 +409,8 @@ const puzzles = [
       [2,1,2]
     ]
   },
-  {
+  { 
+    // solution : 0, 5, 7, 10
     moves: 20,
     base: [
       [0,1,0],
@@ -424,6 +426,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 0, 3, 7, 9
     moves: 4,
     base: [
       [1,2,1],
@@ -437,6 +440,7 @@ const puzzles = [
     ]
   },
   {
+    // no solution
     moves: 30,
     base: [
       [2,0,2,1,2],
@@ -454,6 +458,7 @@ const puzzles = [
     ]
   },
   {
+    // solution 0, 5, 7
     moves: 3,
     base: [
       [0,1,2],
@@ -467,6 +472,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 0, 11, 20
     moves: 30,
     base: [
         [0,2,1,2,1],
@@ -484,6 +490,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 1, 4, 7
     moves: 15,
     base: [
         [2,1,2],
@@ -497,6 +504,7 @@ const puzzles = [
     ]
   },
   {
+    // no solution yet
     moves: 30,
     base: [
         [2,2,0,2,2],
@@ -514,6 +522,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 0, 1, 2, 3, 4, 5, 6, 7, 8 (all tiles)
     moves: 9,
     base: [
         [1,1,1],
@@ -527,6 +536,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 1, 4, 6, 7, 8, 9, 10, 11
     moves: 30,
     base: [
         [1,0,1],
@@ -542,6 +552,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 1, 2, 4, 6, 7, 8, 9, 10, 11, 16, 19
     moves: 35,
     base: [
         [0,1,1,1,0],
@@ -559,6 +570,7 @@ const puzzles = [
     ]
   },
   {
+    //solution : 0, 1, 5, 6
     moves: 20,
     base: [
         [1,1,1,1,1],
@@ -576,6 +588,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 0, 1, 4, 5, 10, 11, 14, 15
     moves: 8,
     base: [
       [1,1,1,2],
