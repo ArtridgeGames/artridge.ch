@@ -473,7 +473,7 @@ const puzzles = [
   },
   {
     // solution : 0, 11, 20
-    moves: 30,
+    moves: 5,
     base: [
         [0,2,1,2,1],
         [1,2,0,2,1],
@@ -491,7 +491,7 @@ const puzzles = [
   },
   {
     // solution : 1, 4, 7
-    moves: 15,
+    moves: 5,
     base: [
         [2,1,2],
         [0,1,0],
@@ -537,7 +537,7 @@ const puzzles = [
   },
   {
     // solution : 1, 4, 6, 7, 8, 9, 10, 11
-    moves: 30,
+    moves: 10,
     base: [
         [1,0,1],
         [0,0,0],
@@ -602,6 +602,63 @@ const puzzles = [
       [1,0,1,1],
       [2,1,1,1]
     ]
+  },
+  {
+    // solution: 2, 4, 7
+    moves: 15,
+    base: [
+      [0,0,0],
+      [2,1,2],
+      [2,0,2]
+    ],
+    target: [
+      [1,0,0],
+      [2,0,2],
+      [2,0,2]
+    ]
+  },
+  {
+    moves: 30,
+    base: [
+      [1,1,1,2],
+      [0,1,2,0],
+      [0,2,1,0],
+      [2,0,0,0]
+    ],
+    target: [
+      [1,1,1,2],
+      [0,0,2,0],
+      [1,2,1,0],
+      [2,0,1,0]
+    ]
+  },
+  {
+    moves: 15,
+    base: [
+      [0,1,2,1,0],
+      [2,1,0,1,2]
+    ],
+    target: [
+      [1,0,2,0,1],
+      [2,0,0,0,2]
+    ]
+  },
+  {
+    moves: 30,
+    base: [
+      [2,1,2,0,2],
+      [1,0,2,1,0],
+      [2,2,1,2,2],
+      [1,0,2,0,1],
+      [2,1,2,1,2]
+    ],
+    target: [
+      [2,1,2,1,2],
+      [1,1,2,1,1],
+      [2,2,0,2,2],
+      [1,1,2,1,1],
+      [2,1,2,1,2]
+    ]
   }
 ]
 for (const puzzle of puzzles) puzzle.completed = false;
@@ -617,7 +674,13 @@ const app = new Vue({
   data: {
     screen: 'menu',
     score: 0,
-    currentChallenge: '',
+    challenge: {
+      baseTime: 0,
+      currentTime: 0,
+      baseMoves: 0,
+      remainingMoves: 0,
+      intervalId: 0
+    },
     isRandomFreeplay: false,
     currentLayout: copy(layouts[0]),
     gameModes: [
@@ -644,6 +707,10 @@ const app = new Vue({
   methods: {
     openScreen(screen) {
       this.screen = screen;
+    },
+    formatTime(time) {
+      const date = new Date(time * 1000);
+      return `${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
     }
   }
 });
@@ -729,25 +796,22 @@ function press(index, preventAnim, preventWin) {
     updateMovesRemaining(won);
     
   } else {
+
     for (let i = 0; i < tiles.length; i++) {
       if (tiles[i].getAttribute('data-col') === 'black' && tiles[i].getAttribute('data-disabled') === 'false') {
         won = false;
       }
     }
+
   }
+
+  if (won && app.screen === 'challenges' && app.challenge.remainingMoves <= 0 && !preventWin) {
+    won = false;
+    openPopup(2);
+  }
+
   if (won && !preventWin) {
-    window.setTimeout(function() {
-      document.querySelectorAll('.popup span')[0].innerHTML = counter;
-
-      document.querySelectorAll('.popup')[0].style.transform = 'translate(-50%,-50%) scale(1)';
-      document.querySelectorAll('.background')[0].style.display = 'block';
-
-      window.setTimeout(() => {
-        document.querySelectorAll('.background')[0].style.opacity = '1';
-      }, 10);
-
-      counter = 0;
-    }, 50);
+    openPopup(0);
 
     switch (app.screen) {
       case 'freeplay':
@@ -762,9 +826,27 @@ function press(index, preventAnim, preventWin) {
 
       case 'challenges':
 
+        app.score++;
         break;
     }
   }
+}
+
+function openPopup(i) {
+  window.setTimeout(function() {
+    try {
+      document.querySelectorAll('.popup span')[i].innerHTML = counter;
+    } catch (e) {}
+
+    document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(1)';
+    document.querySelectorAll('.background')[i].style.display = 'block';
+
+    window.setTimeout(() => {
+      document.querySelectorAll('.background')[i].style.opacity = '1';
+    }, 10);
+
+    counter = 0;
+  }, 50);
 }
 
 function closePopup(i) {
@@ -790,7 +872,9 @@ window.setInterval(() => {
 
 function randomize(preventAnim) {
 
-  if (app.isRandomFreeplay) setLayout(Math.floor(Math.random() * layouts.length));
+  const isChallenge = app.screen === 'challenges';
+
+  if (app.isRandomFreeplay || isChallenge) setLayout(Math.floor(Math.random() * layouts.length));
 
   updateLayout();
 
@@ -800,8 +884,15 @@ function randomize(preventAnim) {
     tiles[i].setAttribute('data-col', 'white');
   }
 
-  const sliderValue = document.getElementById('slider').value + Math.floor(Math.random() * 4);
+  let sliderValue = 
+      isChallenge ? (3 + Math.floor(Math.random() * 4)) :
+      document.getElementById('slider').value + Math.floor(Math.random() * 4);
 
+  if (isChallenge) {
+    if (sliderValue > app.challenge.remainingMoves) sliderValue = app.challenge.remainingMoves;
+    app.challenge.remainingMoves -= sliderValue;
+  }
+  
   const previousTiles = [];
   for (let i = 0; i < sliderValue; i++) {
     let index;
@@ -832,16 +923,7 @@ function setLayout(i) {
   updateLayout();
 }
 
-function changeLayout() {
-  document.querySelectorAll('.popup')[1].style.transform = 'translate(-50%,-50%) scale(1)';
-  document.querySelectorAll('.background')[1].style.display = 'block';
-  window.setTimeout(() => {
-    document.querySelectorAll('.background')[1].style.opacity = '1';
-  },10);
-}
-
 updateLayout();
-randomize(true);
 
 if ('ontouchstart' in document.documentElement) {
   document.addEventListener('touchstart', (e) => {
@@ -879,6 +961,7 @@ function updateTileSize() {
   const el = document.createElement('div');
   el.textContent = '?';
   el.classList.add('button');
+  el.classList.add('text');
   el.addEventListener('click', () => {
     app.isRandomFreeplay = true;
     app.openScreen('freeplay');
@@ -930,7 +1013,7 @@ function updateTileSize() {
 
     let index = 0;
     const exclude = [];
-    for (const row of puzzle.base) {
+    for (const row of puzzle.target) {
       for (const tile of row) {
         if (tile === 2) {
           exclude.push(index)
@@ -939,8 +1022,8 @@ function updateTileSize() {
       }
     }
 
-    const width = puzzle.base[0].length;
-    const height = puzzle.base.length;
+    const width = puzzle.target[0].length;
+    const height = puzzle.target.length;
 
     const el = document.createElement('div');
     el.classList.add('button');
@@ -959,7 +1042,7 @@ function updateTileSize() {
           square.style.width = `${tileSize - 1}px`;
           square.style.height = `${tileSize - 1}px`;
 
-          if (puzzle.base[y][x] === 1) square.style.backgroundColor = 'var(--greige)';
+          if (puzzle.target[y][x] === 1) square.style.backgroundColor = 'var(--greige)';
 
           el.appendChild(square);
         }
@@ -1016,12 +1099,7 @@ function updateMovesRemaining(won) {
   const movesRemaining = app.currentLayout.moves - counter;
 
   if (movesRemaining === 0 && !won) {
-    document.querySelectorAll('.popup')[1].style.transform = 'translate(-50%,-50%) scale(1)';
-    document.querySelectorAll('.background')[1].style.display = 'block';
-
-    window.setTimeout(() => {
-      document.querySelectorAll('.background')[1].style.opacity = '1';
-    }, 10);
+    openPopup(1);
   }
   h1.textContent = `${movesRemaining} moves remaining`;
 }
@@ -1034,11 +1112,40 @@ function retryPuzzle() {
 }
 
 function selectChallenge(challenge) {
-  app.currentChallenge = challenge;
+  app.challenge.type = challenge;
+  app.challenge.baseTime = [60, 3 * 60, 5 * 60, -1][
+    ['sprint',
+     'normal',
+     'marathon',
+     'endurance'
+    ].indexOf(challenge)];
+  app.openScreen('challenge-difficulty-selection'); 
 }
 
 function selectChallengeDifficulty(difficulty) {
-  app.currentChallengeDifficulty = difficulty;
+  app.challenge.difficulty = difficulty;
+  app.challenge.baseMoves = [5, 40, 100, 150, -1][difficulty];
+  app.challenge.remainingMoves = app.challenge.baseMoves;
+
+  app.openScreen('challenges');
+
+  window.clearInterval(app.challenge.intervalId);
+
+  if (app.challenge.baseTime !== -1) {
+    app.challenge.intervalId = window.setInterval(() => {
+      
+      app.challenge.currentTime--;
+
+      if (app.challenge.currentTime <= 0) {
+        openPopup(3);
+        window.clearInterval(app.challenge.intervalId);
+      }
+    }, 1e3);
+  }
+
+  app.challenge.currentTime = app.challenge.baseTime;
+
+  randomize(true);
 }
 
 function setAll(white) {
@@ -1152,15 +1259,15 @@ function isGridSolved(grid) {
 function getPermutations(array, size) {
 
   function p(t, i) {
-      if (t.length === size) {
-          result.push(t);
-          return;
-      }
-      if (i + 1 > array.length) {
-          return;
-      }
-      p(t.concat(array[i]), i + 1);
-      p(t, i + 1);
+    if (t.length === size) {
+      result.push(t);
+      return;
+    }
+    if (i + 1 > array.length) {
+      return;
+    }
+    p(t.concat(array[i]), i + 1);
+    p(t, i + 1);
   }
 
   var result = [];

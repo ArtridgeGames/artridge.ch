@@ -80,6 +80,10 @@
       <div class="screen freeplay" v-show="screen === 'freeplay' || screen === 'puzzles' || screen === 'challenges'">
         <button class='back' @click='openScreen(screen === "freeplay" ? "layouts" : (screen === "puzzles" ? "puzzles-selection" : "challenge-difficulty-selection"))'>back</button>
         
+        <div class="screen-header" v-if="screen === 'challenges'">
+          <p>{{challenge.baseTime === -1 ? 'No time limit' : formatTime(challenge.currentTime)}} - {{challenge.remainingMoves}}</p>
+        </div>
+
         <div class="puzzle-target" v-show="screen === 'puzzles'">
 
         </div>
@@ -103,19 +107,6 @@
             <input class="slider" id="slider" value="10" type="range" min="2" :max="currentLayout.width * currentLayout.height - currentLayout.exclude.length" step="1"></input>
           </div>
         </div>
-
-        <div class="background" @click="closePopup(0);"></div>
-        <div class="popup">
-          <h1>you won in <span></span> moves!</h1>
-          <button @click="closePopup(0);">yay!</button>
-        </div>
-
-        <div class="background" @click="closePopup(1);"></div>
-        <div class="popup">
-          <h1>no moves remaining!</h1>
-          <button @click="closePopup(1); retryPuzzle();">retry</button>
-          <button @click="closePopup(1); openScreen('puzzles-selection');">back</button>
-        </div>
       </div>
 
       <div class="screen puzzles" v-show="screen === 'puzzles-selection'">
@@ -138,24 +129,24 @@
         </div>
 
         <div class="buttons">
-          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('sprint')">sprint</button>
-          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('normal')">normal</button>
-          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('marathon')">marathon</button>
-          <button @click="openScreen('challenge-difficulty-selection'); selectChallenge('endurance')">endurance</button>
+          <button @click="selectChallenge('sprint')">sprint (1min)</button>
+          <button @click="selectChallenge('normal')">normal (3min)</button>
+          <button @click="selectChallenge('marathon')">marathon (5min)</button>
+          <button @click="selectChallenge('endurance')">endurance (no time limit)</button>
         </div>
 
       </div>
 
       <div class="screen challenge-difficulty-selection" v-show="screen === 'challenge-difficulty-selection'">
         <button class='back' @click='openScreen("challenge-selection")'>back</button>
-        <h1 class="screen-header">{{currentChallenge}}</h1>
+        <h1 class="screen-header">{{challenge.type}}</h1>
 
         <div class="buttons">
-          <button @click="openScreen('challenges'); selectChallengeDifficulty(0);">easy</button>
-          <button @click="openScreen('challenges'); selectChallengeDifficulty(1);">medium</button>
-          <button @click="openScreen('challenges'); selectChallengeDifficulty(2);">hard</button>
-          <button @click="openScreen('challenges'); selectChallengeDifficulty(3);">expert</button>
-          <button @click="openScreen('challenges'); selectChallengeDifficulty(4);" v-show="currentChallenge !== 'endurance'">endless</button>
+          <button @click="selectChallengeDifficulty(0);">easy</button>
+          <button @click="selectChallengeDifficulty(1);">medium</button>
+          <button @click="selectChallengeDifficulty(2);">hard</button>
+          <button @click="selectChallengeDifficulty(3);">expert</button>
+          <button @click="selectChallengeDifficulty(4);" v-show="challenge.type !== 'endurance'" disabled>endless (coming soon)</button>
         </div>
       </div>
 
@@ -172,6 +163,31 @@
       <div class="screen stats" v-show="screen === 'stats'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <h1 class="screen-header">Stats</h1>
+      </div>
+
+      <div class="background" @click="closePopup(0);"></div>
+        <div class="popup">
+          <h1>you won in <span></span> moves!</h1>
+          <button @click="closePopup(0);">yay!</button>
+        </div>
+
+      <div class="background" @click="closePopup(1); openScreen('puzzles-selection');"></div>
+      <div class="popup">
+        <h1>no moves remaining!</h1>
+        <button @click="closePopup(1); retryPuzzle();">retry</button>
+        <button @click="closePopup(1); openScreen('puzzles-selection');">back</button>
+      </div>
+
+      <div class="background" @click="closePopup(2); openScreen('menu')"></div>
+      <div class="popup">
+        <h1>you completed the challenge!</h1>
+        <button @click="closePopup(2); openScreen('menu')">yay!</button>
+      </div>
+
+      <div class="background" @click="closePopup(3); openScreen('challenge-selection');"></div>
+      <div class="popup">
+        <h1>no time left.</h1>
+        <button @click="closePopup(3); openScreen('challenge-selection');">retry</button>
       </div>
 
     </div>
