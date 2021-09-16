@@ -707,6 +707,10 @@ const app = new Vue({
   methods: {
     openScreen(screen) {
       this.screen = screen;
+
+      if (screen === 'challenge-difficulty-selection') {
+        window.clearInterval(this.challenge.intervalId);
+      }
     },
     formatTime(time) {
       const date = new Date(time * 1000);
