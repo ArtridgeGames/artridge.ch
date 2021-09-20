@@ -81,7 +81,7 @@
         <button class='back' @click='openScreen(screen === "freeplay" ? "layouts" : (screen === "puzzles" ? "puzzles-selection" : "challenge-difficulty-selection"))'>back</button>
         
         <div class="screen-header" v-if="screen === 'challenges'">
-          <p>{{challenge.baseTime === -1 ? 'No time limit' : formatTime(challenge.currentTime)}} - {{ ((challenge.baseMoves - challenge.remainingMoves - challenge.lastDifficulty) / challenge.baseMoves) * 100 }}% completed</p>
+          <p>{{challenge.baseTime === -1 ? 'No time limit' : formatTime(challenge.currentTime)}} - {{ Math.floor(((challenge.baseMoves - challenge.remainingMoves - challenge.lastDifficulty) / challenge.baseMoves) * 100) }}% completed</p>
         </div>
 
         <div class="puzzle-target" v-show="screen === 'puzzles'">
