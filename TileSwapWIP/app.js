@@ -679,6 +679,7 @@ const app = new Vue({
       currentTime: 0,
       baseMoves: 0,
       remainingMoves: 0,
+      lastDifficulty: 0,
       intervalId: 0
     },
     isRandomFreeplay: false,
@@ -895,6 +896,7 @@ function randomize(preventAnim) {
   if (isChallenge) {
     if (sliderValue > app.challenge.remainingMoves) sliderValue = app.challenge.remainingMoves;
     app.challenge.remainingMoves -= sliderValue;
+    app.challenge.lastDifficulty = sliderValue;
   }
   
   const previousTiles = [];
