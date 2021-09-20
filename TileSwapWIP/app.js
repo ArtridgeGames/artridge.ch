@@ -709,7 +709,7 @@ const app = new Vue({
     openScreen(screen) {
       this.screen = screen;
 
-      if (screen === 'challenge-difficulty-selection') {
+      if (screen !== 'challenges') {
         window.clearInterval(this.challenge.intervalId);
       }
     },
