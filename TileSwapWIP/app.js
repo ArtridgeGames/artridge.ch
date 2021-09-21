@@ -1140,7 +1140,7 @@ function selectChallengeDifficulty(difficulty) {
   if (app.challenge.baseTime !== -1) {
     app.challenge.intervalId = window.setInterval(() => {
       
-      app.challenge.currentTime--;
+      if (!hasOpenedPopup()) app.challenge.currentTime--;
 
       if (app.challenge.currentTime <= 0) {
         openPopup(3);
@@ -1152,6 +1152,14 @@ function selectChallengeDifficulty(difficulty) {
   app.challenge.currentTime = app.challenge.baseTime;
 
   randomize(true);
+}
+
+function hasOpenedPopup() {
+  const popups = document.querySelectorAll(".popup");
+  for (const popup of popups) {
+    if (popup.style.display === 'block') return true;
+  }
+  return false;
 }
 
 function setAll(white) {
