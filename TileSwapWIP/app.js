@@ -1155,9 +1155,9 @@ function selectChallengeDifficulty(difficulty) {
 }
 
 function hasOpenedPopup() {
-  const popups = document.querySelectorAll(".popup");
-  for (const popup of popups) {
-    if (popup.style.display === 'block') return true;
+  const backgrounds = document.querySelectorAll(".background");
+  for (const background of backgrounds) {
+    if (background.style.display === 'block') return true;
   }
   return false;
 }
