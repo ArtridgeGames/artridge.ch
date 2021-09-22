@@ -440,7 +440,7 @@ const puzzles = [
     ]
   },
   {
-    // no solution
+    // solution : 1, 11, 14, 23
     moves: 30,
     base: [
       [2,0,2,1,2],
@@ -504,7 +504,7 @@ const puzzles = [
     ]
   },
   {
-    // no solution yet
+    // solution : 2, 7, 10, 11, 12, 18
     moves: 30,
     base: [
         [2,2,0,2,2],
@@ -617,7 +617,8 @@ const puzzles = [
       [2,0,2]
     ]
   },
-  {
+  { 
+    // solution : 0, 1, 4, 5, 10, 11, 13
     moves: 30,
     base: [
       [1,1,1,2],
@@ -633,6 +634,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 0, 4
     moves: 15,
     base: [
       [0,1,2,1,0],
@@ -644,6 +646,7 @@ const puzzles = [
     ]
   },
   {
+    // solution : 3, 12
     moves: 30,
     base: [
       [2,1,2,0,2],
