@@ -723,7 +723,7 @@ const app = new Vue({
   },
   computed: {
     challengeProgress() {
-      return Math.floor(((challenge.baseMoves - challenge.remainingMoves - challenge.lastDifficulty) / challenge.baseMoves) * 100);
+      return Math.floor(((this.challenge.baseMoves - this.challenge.remainingMoves - this.challenge.lastDifficulty) / this.challenge.baseMoves) * 100);
     }
   }
 });
