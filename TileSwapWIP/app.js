@@ -720,6 +720,11 @@ const app = new Vue({
       const date = new Date(time * 1000);
       return `${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
     }
+  },
+  computed: {
+    challengeProgress() {
+      return Math.floor(((challenge.baseMoves - challenge.remainingMoves - challenge.lastDifficulty) / challenge.baseMoves) * 100);
+    }
   }
 });
 
