@@ -1471,6 +1471,7 @@ function toggleRecording() {
     const arr = [];
     for (let i = 0; i < app.currentLayout.width * app.currentLayout.height; i++) {
       const n = countOccurrences(recordedMoves, i);
+      alert(n);
       if (n % 2 !== 0) arr.push(i);
     }
     alert(arr);
