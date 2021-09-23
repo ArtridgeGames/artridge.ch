@@ -1453,7 +1453,8 @@ function help() {
     'pressAll()': 'presses each tile of the current layout'
   })
 }
- 
+
+const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
 let isRecording = false;
 let recordedMoves = [];
 function toggleRecording() {
@@ -1461,6 +1462,11 @@ function toggleRecording() {
   if (isRecording) {
     recordedMoves = [];
   } else {
-    alert(recordedMoves);
+    const arr = [];
+    for (let i = 0; i < app.currentLayout.width * app.currentLayout.height; i++) {
+      const n = countOccurrences(recordedMoves, i);
+      if (n % 2 === 0) arr.push(i);
+    }
+    alert(arr);
   }
 }
