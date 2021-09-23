@@ -1,3 +1,7 @@
+const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
+let isRecording = false;
+let recordedMoves = [];
+
 const layouts = [
   //squares
   {
@@ -889,6 +893,11 @@ function press(index, preventAnim, preventWin) {
   }
 
   if (won && !preventWin) {
+    
+    if (isRecording) {
+      toggleRecording();
+    }
+    
     openPopup(0);
 
     switch (app.screen) {
@@ -1454,9 +1463,6 @@ function help() {
   })
 }
 
-const countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0);
-let isRecording = false;
-let recordedMoves = [];
 function toggleRecording() {
   isRecording = !isRecording;
   if (isRecording) {
@@ -1465,7 +1471,7 @@ function toggleRecording() {
     const arr = [];
     for (let i = 0; i < app.currentLayout.width * app.currentLayout.height; i++) {
       const n = countOccurrences(recordedMoves, i);
-      if (n % 2 === 0) arr.push(i);
+      if (n % 2 !== 0) arr.push(i);
     }
     alert(arr);
   }
