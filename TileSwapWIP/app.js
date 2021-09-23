@@ -831,6 +831,7 @@ function updateLayout(layout) {
           e.preventDefault();
           counter++;
           press(index);
+          recordedMoves.push(index);
         });
         tile.setAttribute('data-disabled', false);
       }
@@ -1451,4 +1452,15 @@ function help() {
     'pressOnGrid(grid, index)': 'returns a copy of the grid passed as parameter after performing a press at the given index',
     'pressAll()': 'presses each tile of the current layout'
   })
+}
+ 
+let isRecording = false;
+let recordedMoves = [];
+function toggleRecording() {
+  isRecording = !isRecording;
+  if (isRecording) {
+    recordedMoves = [];
+  } else {
+    alert(recordedMoves);
+  }
 }
