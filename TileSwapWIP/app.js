@@ -834,8 +834,8 @@ function updateLayout(layout) {
         tile.addEventListener('ontouchstart' in document.documentElement ? 'touchstart' : 'click', (e) => {
           e.preventDefault();
           counter++;
-          press(index);
           recordedMoves.push(index);
+          press(index);
         });
         tile.setAttribute('data-disabled', false);
       }
