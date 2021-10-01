@@ -1328,7 +1328,7 @@ function selectChallenge(challenge) {
 
 function selectChallengeDifficulty(difficulty) {
   app.challenge.difficulty = difficulty;
-  app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 1 : app.challenge.baseTime/60) ;
+  app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60) ;
   app.challenge.remainingMoves = app.challenge.baseMoves;
 
   app.openScreen('challenges');
