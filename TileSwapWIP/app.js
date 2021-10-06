@@ -1261,6 +1261,7 @@ function updatePuzzlesContainer() {
 
     const el = document.createElement('div');
     el.classList.add('button');
+    if (puzzle.completed) el.classList.add('completed');
 
     index = 0;
     const tileSize = 1 / Math.sqrt(height * width) * 60;
