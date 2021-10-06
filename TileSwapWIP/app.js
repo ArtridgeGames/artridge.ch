@@ -1397,6 +1397,8 @@ function sortBy(sorting) {
     puzzles.sort((a, b) => a.solution.length - b.solution.length);
   } else if (sorting === "size") {
     puzzles.sort((a, b) => a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0));
+  } else if (sorting === "completion") {
+    puzzles.sort((a,b) => a.completed - b.completed);
   }
   updatePuzzlesContainer();
 }
