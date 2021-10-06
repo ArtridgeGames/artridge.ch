@@ -111,14 +111,15 @@
 
       <div class="screen puzzles" v-show="screen === 'puzzles-selection'">
         <button class='back' @click='openScreen("menu")'>back</button>
-        <div class="sortMenu">
-          <button class='sort'>sort by</button>
-          <div class="sortContent">
+        <div class="sort-menu">
+          <button class='sort'>sort by:<br>{{puzzleSorting}}</button>
+          <div class="sort-content">
             <a @click='sortBy("difficulty")'>difficulty</a>
             <a @click='sortBy("size")'>size</a>
             <a @click='sortBy("completion")'>completion</a>
           </div>
         </div>
+        <button class='sort-order' @click='sortOrder *= -1; sortBy(puzzleSorting)'>{{sortOrder === 1 ? 'ascending' : 'descending'}}</button>
         <div class="screen-header">
           <p>select a puzzle</p>
           <p>{{score}}</p>

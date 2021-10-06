@@ -890,6 +890,8 @@ const app = new Vue({
   data: {
     screen: 'menu',
     score: 0,
+    puzzleSorting: 'difficulty',
+    sortOrder: 1,
     challenge: {
       baseTime: 0,
       currentTime: 0,
@@ -1021,7 +1023,7 @@ function press(index, preventAnim, preventWin) {
     won = JSON.stringify(getGrid()) === JSON.stringify(app.currentLayout.target);
     
     updateMovesRemaining(won);
-    
+    sortBy(app.puzzleSorting);
   } else {
 
     for (let i = 0; i < tiles.length; i++) {
@@ -1328,7 +1330,7 @@ function updatePuzzlesContainer() {
     container.appendChild(el);
   }
 }
-updatePuzzlesContainer();
+sortBy(app.puzzleSorting)
 
 function updateMovesRemaining(won) {
   const h1 = document.querySelector('.puzzle-info h1');
@@ -1392,13 +1394,15 @@ function hasOpenedPopup() {
   return false;
 }
 
-function sortBy(sorting) {
+function sortBy(sorting, what) {
+  app.puzzleSorting = sorting;
   if (sorting === "difficulty") {
-    puzzles.sort((a, b) => a.solution.length - b.solution.length);
+    puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
   } else if (sorting === "size") {
-    puzzles.sort((a, b) => a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0));
+    puzzles.sort((a, b) => (a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0)) * app.sortOrder);
   } else if (sorting === "completion") {
-    puzzles.sort((a,b) => a.completed - b.completed);
+    puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
+    puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
   }
   updatePuzzlesContainer();
 }
