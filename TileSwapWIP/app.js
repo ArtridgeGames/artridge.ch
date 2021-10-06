@@ -1242,6 +1242,7 @@ function updateTileSize() {
 
 function updatePuzzlesContainer() {
   const container = document.querySelector('.screen.puzzles .layout-container');
+  container.innerHTML = "";
   for (const [i, puzzle] of puzzles.entries()) {
 
     let index = 0;
@@ -1394,7 +1395,7 @@ function sortBy(sorting) {
   if (sorting === "difficulty") {
     puzzles.sort((a, b) => a.solution.length - b.solution.length);
   } else if (sorting === "size") {
-    puzzles.sort((a, b) => a.base.length - b.base.length);
+    puzzles.sort((a, b) => a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0));
   }
   updatePuzzlesContainer();
 }
