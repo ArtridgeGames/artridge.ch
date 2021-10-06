@@ -890,7 +890,7 @@ const app = new Vue({
   data: {
     screen: 'menu',
     score: 0,
-    puzzleSorting: 'difficulty',
+    puzzleSorting: 'completion',
     sortOrder: 1,
     challenge: {
       baseTime: 0,
@@ -1394,8 +1394,19 @@ function hasOpenedPopup() {
   return false;
 }
 
-function sortBy(sorting, what) {
-  app.puzzleSorting = sorting;
+function sortBy(sorting) {
+  if (sorting === "switch") {
+    if (app.puzzleSorting === "difficulty") {
+      sorting = "size";
+      app.puzzleSorting = sorting;
+    } else if (app.puzzleSorting === "size") {
+      sorting = "completion";
+      app.puzzleSorting = sorting;
+    } else if (app.puzzleSorting === "completion") {
+      sorting = "difficulty";
+      app.puzzleSorting = sorting;
+    }
+  }
   if (sorting === "difficulty") {
     puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
   } else if (sorting === "size") {
