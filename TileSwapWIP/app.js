@@ -1240,7 +1240,7 @@ function updateTileSize() {
   }
 })();
 
-(() => {
+function updatePuzzlesContainer() {
   const container = document.querySelector('.screen.puzzles .layout-container');
   for (const [i, puzzle] of puzzles.entries()) {
 
@@ -1325,7 +1325,8 @@ function updateTileSize() {
 
     container.appendChild(el);
   }
-})();
+}
+updatePuzzlesContainer();
 
 function updateMovesRemaining(won) {
   const h1 = document.querySelector('.puzzle-info h1');
@@ -1391,17 +1392,11 @@ function hasOpenedPopup() {
 
 function sortBy(sorting) {
   if (sorting === "difficulty") {
-    let sortedPuzzles = puzzles.sort(function(a, b) {
-      return a.solution.length - b.solution.length;
-    });
-    puzzles = sortedPuzzles
+    puzzles.sort((a, b) => a.solution.length - b.solution.length);
   } else if (sorting === "size") {
-    let sortedPuzzles = puzzles.sort(function(a, b) {
-      return a.base.length - b.base.length;
-    });
-    puzzles = sortedPuzzles
+    puzzles.sort((a, b) => a.base.length - b.base.length);
   }
-  console.log(puzzles)
+  updatePuzzlesContainer();
 }
 
 function setAll(white) {
