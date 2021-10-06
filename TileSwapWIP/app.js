@@ -890,7 +890,7 @@ const app = new Vue({
   data: {
     screen: 'menu',
     score: 0,
-    puzzleSorting: 'completion',
+    puzzleSorting: 'difficulty',
     sortOrder: 1,
     challenge: {
       baseTime: 0,
