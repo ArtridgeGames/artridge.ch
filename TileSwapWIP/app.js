@@ -350,9 +350,8 @@ layouts.forEach(e => {
   e.height = parseInt(dimensions[1]);
 });
 
-const puzzles = [
+let puzzles = [
   {
-    //solution : 0,1,2,3,7,11,15,14,13,12,8,4
     moves: 20,
     base: [
       [0,1,1,1],
@@ -365,7 +364,8 @@ const puzzles = [
       [1,1,0,1],
       [1,0,1,1],
       [0,1,1,1]
-    ]
+    ],
+    solution: [0,1,2,3,7,11,15,14,13,12,8,4]
   },
   {
     //solution : (all tiles) 1,2,7,11,14,13,8,4
@@ -381,7 +381,8 @@ const puzzles = [
       [1,2,2,1],
       [1,2,2,1],
       [2,0,0,2]
-    ]
+    ],
+    solution: [1,2,7,11,14,13,8,4]
   },
   {
     //solution : 0; 5; 10; 15 (All Tiles)
@@ -397,7 +398,8 @@ const puzzles = [
       [2,1,2,2],
       [2,2,0,2],
       [2,2,2,1]
-    ]
+    ],
+    solution: [0, 5, 10, 15]
   },
   {
     //solution : 3,6,9,10,13,11,8,5
@@ -415,7 +417,8 @@ const puzzles = [
       [0,0,0],
       [0,0,0],
       [2,1,2]
-    ]
+    ],
+    solution: [3,6,9,10,13,11,8,5]
   },
   { 
     // solution : 0, 5, 7, 10
@@ -431,7 +434,8 @@ const puzzles = [
       [0,2,0],
       [2,0,2],
       [0,1,0]
-    ]
+    ],
+    solution: [0, 5, 7, 10]
   },
   {
     // solution : 0, 3, 7, 9
@@ -445,7 +449,8 @@ const puzzles = [
       [0,2,0],
       [2,0,2],
       [0,2,0]
-    ]
+    ],
+    solution: [0, 3, 7, 9]
   },
   {
     // solution : 1, 11, 14, 23
@@ -463,7 +468,8 @@ const puzzles = [
       [0,0,0,0,0],
       [2,1,2,1,2],
       [2,1,2,1,2]
-    ]
+    ],
+    solution: [1, 11, 14, 23]
   },
   {
     // solution 0, 5, 7
@@ -477,7 +483,8 @@ const puzzles = [
       [1,1,2],
       [1,2,0],
       [2,0,0]
-    ]
+    ],
+    solution: [0, 5, 7]
   },
   {
     // solution : 0, 11, 20
@@ -495,7 +502,8 @@ const puzzles = [
         [2,0,2,0,2],
         [0,2,0,2,0],
         [1,2,1,2,1]
-    ]
+    ],
+    solution: [0, 11, 20]
   },
   {
     // solution : 1, 4, 7
@@ -509,7 +517,8 @@ const puzzles = [
         [2,1,2],
         [1,0,1],
         [2,1,2]
-    ]
+    ],
+    solution: [1, 4, 7]
   },
   {
     // solution : 2, 7, 10, 11, 12, 18
@@ -527,7 +536,8 @@ const puzzles = [
         [0,0,0,1,1],
         [2,0,1,1,2],
         [2,2,1,2,2]
-    ]
+    ],
+    solution: [2, 7, 10, 11, 12, 18]
   },
   {
     // solution : 0, 1, 2, 3, 4, 5, 6, 7, 8 (all tiles)
@@ -541,7 +551,8 @@ const puzzles = [
         [1,1,1],
         [1,1,1],
         [1,1,1]
-    ]
+    ],
+    solution: [0, 1, 2, 3, 4, 5, 6, 7, 8]
   },
   {
     // solution : 1, 4, 6, 7, 8, 9, 10, 11
@@ -557,7 +568,8 @@ const puzzles = [
         [0,1,0],
         [0,1,0],
         [1,0,1]
-    ]
+    ],
+    solution : [1, 4, 6, 7, 8, 9, 10, 11]
   },
   {
     // solution : 1, 2, 4, 6, 7, 8, 9, 10, 11, 16, 19
@@ -575,7 +587,8 @@ const puzzles = [
         [0,1,1,1,0],
         [0,1,1,1,0],
         [1,0,0,0,1]
-    ]
+    ],
+    solution : [1, 2, 4, 6, 7, 8, 9, 10, 11, 16, 19]
   },
   {
     //solution : 0, 1, 5, 6
@@ -593,7 +606,8 @@ const puzzles = [
         [1,2,0,2,1],
         [1,1,2,1,1],
         [1,1,1,1,1]
-    ]
+    ],
+    solution : [0, 1, 5, 6]
   },
   {
     // solution : 0, 1, 4, 5, 10, 11, 14, 15
@@ -609,7 +623,8 @@ const puzzles = [
       [1,1,0,1],
       [1,0,1,1],
       [2,1,1,1]
-    ]
+    ],
+    solution: [0, 1, 4, 5, 10, 11, 14, 15]
   },
   {
     // solution: 2, 4, 7
@@ -623,7 +638,8 @@ const puzzles = [
       [1,0,0],
       [2,0,2],
       [2,0,2]
-    ]
+    ],
+    solution: [2, 4, 7]
   },
   { 
     // solution : 0, 1, 4, 5, 10, 11, 13
@@ -639,7 +655,8 @@ const puzzles = [
       [0,0,2,0],
       [1,2,1,0],
       [2,0,1,0]
-    ]
+    ],
+    solution: [0, 1, 4, 5, 10, 11, 13]
   },
   {
     // solution : 0, 4
@@ -651,7 +668,8 @@ const puzzles = [
     target: [
       [1,0,2,0,1],
       [2,0,0,0,2]
-    ]
+    ],
+    solution: [0, 4]
   },
   {
     // solution : 1, 3, 4, 5, 7
@@ -665,7 +683,8 @@ const puzzles = [
         [1,0,1],
         [0,1,0],
         [1,0,1]
-    ]
+    ],
+    solution: [1, 3, 4, 5, 7]
   },
   {
     // solution : 6, 7, 9
@@ -683,7 +702,8 @@ const puzzles = [
         [0,0,1],
         [1,2,0],
         [2,1,2]
-    ]
+    ],
+    solution: [6, 7, 9]
   },
   {
     // solution : 6, 9, 14, 19
@@ -699,7 +719,8 @@ const puzzles = [
         [0,0,1,0,0],
         [1,2,2,2,1],
         [1,1,2,1,1]
-    ]
+    ],
+    solution: [6, 9, 14, 19]
   },
   {
     // solution : 2, 7, 9, 12, 16, 19, 23, 26, 28, 33
@@ -719,7 +740,8 @@ const puzzles = [
         [2,1,2,0,0,0],
         [2,2,0,0,0,2],
         [2,2,2,0,2,2]
-    ]
+    ],
+    solution: [2, 7, 9, 12, 16, 19, 23, 26, 28, 33]
   },
   {
     // solution : 3, 12
@@ -737,7 +759,8 @@ const puzzles = [
       [2,2,0,2,2],
       [1,1,2,1,1],
       [2,1,2,1,2]
-    ]
+    ],
+    solution: [3, 12]
   },
   {
     // solution : 10, 14, 20, 31, 42, 48
@@ -759,7 +782,8 @@ const puzzles = [
         [2,2,0,0,0,2,2],
         [2,0,0,2,0,0,2],
         [0,0,2,2,2,0,0]
-    ]
+    ],
+    solution: [10, 14, 20, 31, 42, 48]
   },
   {
     // solution : 1,2,4,7,8,11,13,14
@@ -775,7 +799,8 @@ const puzzles = [
         [1,1,1,1],
         [1,1,1,1],
         [0,1,1,0]
-    ]
+    ],
+    solution: [1,2,4,7,8,11,13,14]
   },
   {
     // solution : 7,10,14,15,21,24
@@ -793,7 +818,8 @@ const puzzles = [
         [0,2,0,2,0],
         [0,2,1,2,0],
         [0,1,1,1,0]
-    ]
+    ],
+    solution: [7,10,14,15,21,24]
   },
   {
     // 0, 2, 3, 5
@@ -807,7 +833,8 @@ const puzzles = [
         [1,0,1],
         [0,1,0],
         [0,1,0]
-    ]
+    ],
+    solution: [0, 2, 3, 5]
   },
   {
     // solution : 2, 4, 5, 7, 9, 10, 14
@@ -823,7 +850,8 @@ const puzzles = [
         [0,0,2,0],
         [2,0,0,0],
         [2,2,0,2]
-    ]
+    ],
+    solution: [2, 4, 5, 7, 9, 10, 14]
   },
   {
     // solution : 1,2,3,4,14,16,17,21,28,31,34,35,41,42,44,45,46,47
@@ -845,7 +873,8 @@ const puzzles = [
         [1,2,0,0,0,2,1],
         [1,2,2,0,2,2,1],
         [1,1,1,1,1,1,1]
-    ]
+    ],
+    solution: [1,2,3,4,14,16,17,21,28,31,34,35,41,42,44,45,46,47]
   }
 ]
 for (const puzzle of puzzles) puzzle.completed = false;
@@ -1358,6 +1387,21 @@ function hasOpenedPopup() {
     if (background.style.display === 'block') return true;
   }
   return false;
+}
+
+function sortBy(sorting) {
+  if (sorting === "difficulty") {
+    let sortedPuzzles = puzzles.sort(function(a, b) {
+      return a.solution.length - b.solution.length;
+    });
+    puzzles = sortedPuzzles
+  } else if (sorting === "size") {
+    let sortedPuzzles = puzzles.sort(function(a, b) {
+      return a.base.length - b.base.length;
+    });
+    puzzles = sortedPuzzles
+  }
+  console.log(puzzles)
 }
 
 function setAll(white) {
