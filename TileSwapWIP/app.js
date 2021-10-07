@@ -891,6 +891,7 @@ const app = new Vue({
     screen: 'menu',
     score: 0,
     puzzleSorting: 'difficulty',
+    layoutsSorting: 'size',
     sortOrder: 1,
     challenge: {
       baseTime: 0,
@@ -1190,9 +1191,9 @@ function updateTileSize() {
   }
 }
 
-(() => {
+function updateLayoutsContainer() {
   let layoutsContainer = document.querySelector('.screen.layouts .layout-container');
-
+  layoutsContainer.innerHTML = ''
   const el = document.createElement('div');
   el.textContent = '?';
   el.classList.add('button');
@@ -1240,8 +1241,8 @@ function updateTileSize() {
 
     layoutsContainer.appendChild(el);
   }
-})();
-
+}
+sortBy(app.layoutsSorting, "layouts")
 function updatePuzzlesContainer() {
   const container = document.querySelector('.screen.puzzles .layout-container');
   container.innerHTML = "";
@@ -1394,28 +1395,38 @@ function hasOpenedPopup() {
   return false;
 }
 
-function sortBy(sorting) {
-  if (sorting === "switch") {
-    if (app.puzzleSorting === "difficulty") {
-      sorting = "size";
-      app.puzzleSorting = sorting;
-    } else if (app.puzzleSorting === "size") {
-      sorting = "completion";
-      app.puzzleSorting = sorting;
-    } else if (app.puzzleSorting === "completion") {
-      sorting = "difficulty";
-      app.puzzleSorting = sorting;
+function sortBy(sorting, menu = "puzzles") {
+  if (menu === "puzzles") {
+    if (sorting === "switch") {
+      if (app.puzzleSorting === "difficulty") {
+        sorting = "size";
+        app.puzzleSorting = sorting;
+      } else if (app.puzzleSorting === "size") {
+        sorting = "completion";
+        app.puzzleSorting = sorting;
+      } else if (app.puzzleSorting === "completion") {
+        sorting = "difficulty";
+        app.puzzleSorting = sorting;
+      }
     }
+    if (sorting === "difficulty") {
+      puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
+    } else if (sorting === "size") {
+      puzzles.sort((a, b) => (a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0)) * app.sortOrder);
+    } else if (sorting === "completion") {
+      puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
+      puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
+    }
+    updatePuzzlesContainer();
+} else if (menu === 'layouts') {
+  sorting = "size";
+  if (sorting === "size") {
+    layouts.sort((a, b) => (a.width * a.height - b.width * b.height) * app.sortOrder);
+    console.log(layouts)
+
   }
-  if (sorting === "difficulty") {
-    puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-  } else if (sorting === "size") {
-    puzzles.sort((a, b) => (a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0)) * app.sortOrder);
-  } else if (sorting === "completion") {
-    puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-    puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
-  }
-  updatePuzzlesContainer();
+  updateLayoutsContainer();   
+}
 }
 
 function setAll(white) {
