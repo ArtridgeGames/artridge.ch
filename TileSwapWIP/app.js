@@ -1100,7 +1100,6 @@ function press(index, preventAnim, preventWin) {
     won = JSON.stringify(getGrid()) === JSON.stringify(app.currentLayout.target);
     
     updateMovesRemaining(won);
-    sortBy(app.puzzleSorting);
   } else {
 
     for (let i = 0; i < tiles.length; i++) {
@@ -1132,7 +1131,8 @@ function press(index, preventAnim, preventWin) {
       case 'puzzles':
         app.score++;
         puzzles[app.currentLayout.puzzleIndex].completed = true;
-        document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
+        sortBy(app.puzzleSorting);
+        // document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
         break;
 
       case 'challenges':
