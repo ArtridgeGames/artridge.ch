@@ -1497,7 +1497,7 @@ function sortBy(sorting, menu = "puzzles") {
 } else if (menu === 'layouts') {
   sorting = "size";
   if (sorting === "size") {
-    layouts.sort((a, b) => (a.width * a.height - b.width * b.height) * app.sortOrder);
+    layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * app.sortOrder);
     console.log(layouts)
 
   }
