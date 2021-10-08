@@ -892,7 +892,7 @@ let puzzles = [
         [1,1,0,0,0],
         [0,1,2,0,1]
     ],
-    solution: []
+    solution: [1,3,4,6,7,17,18]
   },
   {
     moves: 30,
@@ -910,7 +910,7 @@ let puzzles = [
         [1,0,1,0,1],
         [0,1,0,1,0]
     ],
-    solution: []
+    solution: [6, 9, 21, 24]
   },
   {
     moves: 30,
@@ -930,7 +930,7 @@ let puzzles = [
         [2,2,1,2,2,2],
         [1,1,1,2,2,2]
     ],
-    solution: []
+    solution: [6, 11, 12, 15, 17, 18, 20, 32]
   },
   {
     moves: 30,
@@ -950,7 +950,7 @@ let puzzles = [
         [0,0,0,2,0,2],
         [2,0,2,2,2,2]
     ],
-    solution: []
+    solution: [2,9,14,16,19,21,23,25,26]
   }
 ]
 for (const puzzle of puzzles) puzzle.completed = false;
