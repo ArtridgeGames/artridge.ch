@@ -1391,7 +1391,7 @@ function hasOpenedPopup() {
   for (const background of backgrounds) {
     if (background.style.display === 'block') return true;
   }
-  return false;
+  return false
 }
 
 function sortBy(sorting) {
