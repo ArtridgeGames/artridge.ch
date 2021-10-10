@@ -422,7 +422,7 @@ let puzzles = [
   },
   { 
     // solution : 0, 5, 7, 10
-    moves: 20,
+    moves: 6,
     base: [
       [0,1,0],
       [0,2,0],
@@ -454,7 +454,7 @@ let puzzles = [
   },
   {
     // solution : 1, 11, 14, 23
-    moves: 30,
+    moves: 6,
     base: [
       [2,0,2,1,2],
       [2,1,2,0,2],
@@ -522,7 +522,7 @@ let puzzles = [
   },
   {
     // solution : 2, 7, 10, 11, 12, 18
-    moves: 30,
+    moves: 8,
     base: [
         [2,2,0,2,2],
         [2,1,0,1,2],
@@ -573,7 +573,7 @@ let puzzles = [
   },
   {
     // solution : 1, 2, 4, 6, 7, 8, 9, 10, 11, 16, 19
-    moves: 35,
+    moves: 15,
     base: [
         [0,1,1,1,0],
         [1,0,1,0,1],
@@ -592,7 +592,7 @@ let puzzles = [
   },
   {
     //solution : 0, 1, 5, 6
-    moves: 20,
+    moves: 6,
     base: [
         [1,1,1,1,1],
         [1,1,2,1,1],
@@ -628,7 +628,7 @@ let puzzles = [
   },
   {
     // solution: 2, 4, 7
-    moves: 15,
+    moves: 5,
     base: [
       [0,0,0],
       [2,1,2],
@@ -643,7 +643,7 @@ let puzzles = [
   },
   { 
     // solution : 0, 1, 4, 5, 10, 11, 13
-    moves: 30,
+    moves: 10,
     base: [
       [1,1,1,2],
       [0,1,2,0],
@@ -660,7 +660,7 @@ let puzzles = [
   },
   {
     // solution : 0, 4
-    moves: 15,
+    moves: 2,
     base: [
       [0,1,2,1,0],
       [2,1,0,1,2]
@@ -688,7 +688,7 @@ let puzzles = [
   },
   {
     // solution : 6, 7, 9
-    moves: 30,
+    moves: 5,
     base: [
         [2,0,2],
         [1,2,0],
@@ -707,7 +707,7 @@ let puzzles = [
   },
   {
     // solution : 6, 9, 14, 19
-    moves: 30,
+    moves: 6,
     base: [
         [2,2,0,2,2],
         [1,1,0,0,0],
@@ -724,7 +724,7 @@ let puzzles = [
   },
   {
     // solution : 2, 7, 9, 12, 16, 19, 23, 26, 28, 33
-    moves: 30,
+    moves: 13,
     base: [
         [2,2,0,2,2,2],
         [2,0,0,0,2,2],
@@ -745,7 +745,7 @@ let puzzles = [
   },
   {
     // solution : 3, 12
-    moves: 30,
+    moves: 2,
     base: [
       [2,1,2,0,2],
       [1,0,2,1,0],
@@ -764,7 +764,7 @@ let puzzles = [
   },
   {
     // solution : 10, 14, 20, 31, 42, 48
-    moves: 30,
+    moves: 6,
     base: [
         [2,2,2,1,2,2,2],
         [2,2,1,1,1,2,2],
@@ -787,7 +787,7 @@ let puzzles = [
   },
   {
     // solution : 1,2,4,7,8,11,13,14
-    moves: 30,
+    moves: 10,
     base: [
         [0,0,0,0],
         [0,1,1,0],
@@ -804,7 +804,7 @@ let puzzles = [
   },
   {
     // solution : 7,10,14,15,21,24
-    moves: 30,
+    moves: 8,
     base: [
         [0,0,1,0,0],
         [1,2,1,2,1],
@@ -823,7 +823,7 @@ let puzzles = [
   },
   {
     // 0, 2, 3, 5
-    moves: 30,
+    moves: 6,
     base: [ 
         [1,0,1],
         [0,1,0],
@@ -838,7 +838,7 @@ let puzzles = [
   },
   {
     // solution : 2, 4, 5, 7, 9, 10, 14
-    moves: 30,
+    moves: 10,
     base: [
         [2,1,1,2],
         [1,1,2,1],
@@ -855,7 +855,7 @@ let puzzles = [
   },
   {
     // solution : 1,2,3,4,14,16,17,21,28,31,34,35,41,42,44,45,46,47
-    moves: 40,
+    moves: 25,
     base: [
         [0,1,0,0,1,0,1],
         [1,2,2,1,2,2,1],
@@ -875,6 +875,82 @@ let puzzles = [
         [1,1,1,1,1,1,1]
     ],
     solution: [1,2,3,4,14,16,17,21,28,31,34,35,41,42,44,45,46,47]
+  },
+  {
+    moves: 30,
+    base: [
+        [0,1,2,1,0],
+        [1,1,0,1,1],
+        [2,1,0,0,2],
+        [1,0,0,0,1],
+        [0,0,2,0,0]
+    ],
+    target: [
+        [0,0,2,0,0],
+        [1,0,0,0,1],
+        [2,0,0,1,2],
+        [1,1,0,0,0],
+        [0,1,2,0,1]
+    ],
+    solution: [1,3,4,6,7,17,18]
+  },
+  {
+    moves: 30,
+    base: [
+        [1,0,1,0,1],
+        [0,1,0,1,0],
+        [1,0,1,0,1],
+        [0,1,0,1,0],
+        [1,0,1,0,1]
+    ],
+    target: [
+        [0,1,0,1,0],
+        [1,0,1,0,1],
+        [0,1,0,1,0],
+        [1,0,1,0,1],
+        [0,1,0,1,0]
+    ],
+    solution: [6, 9, 21, 24]
+  },
+  {
+    moves: 30,
+    base: [
+        [2,2,2,2,2,0],
+        [1,1,0,2,2,1],
+        [0,2,2,1,0,1],
+        [1,2,0,2,2,2],
+        [2,2,1,2,2,2],
+        [1,0,0,2,2,2]
+    ],
+    target: [
+        [2,2,2,2,2,1],
+        [1,1,1,2,2,1],
+        [1,2,2,1,1,1],
+        [1,2,0,2,2,2],
+        [2,2,1,2,2,2],
+        [1,1,1,2,2,2]
+    ],
+    solution: [6, 11, 12, 15, 17, 18, 20, 32]
+  },
+  {
+    moves: 30,
+    base: [
+        [2,2,0,2,2,2],
+        [2,0,1,0,2,2],
+        [2,2,0,2,0,2],
+        [2,0,2,0,1,0],
+        [0,1,0,2,0,2],
+        [2,0,2,2,2,2]
+    ],
+    target: [
+        [2,2,0,2,2,2],
+        [2,0,0,0,2,2],
+        [2,2,0,2,0,2],
+        [2,0,2,0,0,0],
+        [0,0,0,2,0,2],
+        [2,0,2,2,2,2]
+    ],
+    solution: [2,9,14,16,19,21,23,25,26]
   }
 ]
 for (const puzzle of puzzles) puzzle.completed = false;
@@ -891,6 +967,7 @@ const app = new Vue({
     screen: 'menu',
     score: 0,
     puzzleSorting: 'difficulty',
+    layoutsSorting: 'size',
     sortOrder: 1,
     challenge: {
       baseTime: 0,
@@ -1023,7 +1100,6 @@ function press(index, preventAnim, preventWin) {
     won = JSON.stringify(getGrid()) === JSON.stringify(app.currentLayout.target);
     
     updateMovesRemaining(won);
-    sortBy(app.puzzleSorting);
   } else {
 
     for (let i = 0; i < tiles.length; i++) {
@@ -1055,7 +1131,8 @@ function press(index, preventAnim, preventWin) {
       case 'puzzles':
         app.score++;
         puzzles[app.currentLayout.puzzleIndex].completed = true;
-        document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
+        sortBy(app.puzzleSorting);
+        // document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
         break;
 
       case 'challenges':
@@ -1190,9 +1267,9 @@ function updateTileSize() {
   }
 }
 
-(() => {
+function updateLayoutsContainer() {
   let layoutsContainer = document.querySelector('.screen.layouts .layout-container');
-
+  layoutsContainer.innerHTML = ''
   const el = document.createElement('div');
   el.textContent = '?';
   el.classList.add('button');
@@ -1240,8 +1317,8 @@ function updateTileSize() {
 
     layoutsContainer.appendChild(el);
   }
-})();
-
+}
+sortBy(app.layoutsSorting, "layouts")
 function updatePuzzlesContainer() {
   const container = document.querySelector('.screen.puzzles .layout-container');
   container.innerHTML = "";
@@ -1394,28 +1471,38 @@ function hasOpenedPopup() {
   return false
 }
 
-function sortBy(sorting) {
-  if (sorting === "switch") {
-    if (app.puzzleSorting === "difficulty") {
-      sorting = "size";
-      app.puzzleSorting = sorting;
-    } else if (app.puzzleSorting === "size") {
-      sorting = "completion";
-      app.puzzleSorting = sorting;
-    } else if (app.puzzleSorting === "completion") {
-      sorting = "difficulty";
-      app.puzzleSorting = sorting;
+function sortBy(sorting, menu = "puzzles") {
+  if (menu === "puzzles") {
+    if (sorting === "switch") {
+      if (app.puzzleSorting === "difficulty") {
+        sorting = "size";
+        app.puzzleSorting = sorting;
+      } else if (app.puzzleSorting === "size") {
+        sorting = "completion";
+        app.puzzleSorting = sorting;
+      } else if (app.puzzleSorting === "completion") {
+        sorting = "difficulty";
+        app.puzzleSorting = sorting;
+      }
     }
+    if (sorting === "difficulty") {
+      puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
+    } else if (sorting === "size") {
+      puzzles.sort((a, b) => (a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0)) * app.sortOrder);
+    } else if (sorting === "completion") {
+      puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
+      puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
+    }
+    updatePuzzlesContainer();
+} else if (menu === 'layouts') {
+  sorting = "size";
+  if (sorting === "size") {
+    layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * app.sortOrder);
+    console.log(layouts)
+
   }
-  if (sorting === "difficulty") {
-    puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-  } else if (sorting === "size") {
-    puzzles.sort((a, b) => (a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0)) * app.sortOrder);
-  } else if (sorting === "completion") {
-    puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-    puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
-  }
-  updatePuzzlesContainer();
+  updateLayoutsContainer();   
+}
 }
 
 function setAll(white) {
