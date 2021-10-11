@@ -1028,6 +1028,7 @@ const app = new Vue({
           time: 0
         }
       }
+    }
     Vue.set(app, 'challenges', obj);
   }
 });
