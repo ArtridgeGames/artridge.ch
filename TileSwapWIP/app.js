@@ -1020,6 +1020,19 @@ const app = new Vue({
   }
 });
 
+(()=>{
+  const obj = {};
+  for (const challenge of ['sprint', 'normal', 'marathon', 'endurance']) {
+    obj[challenge] = {}
+    for (const difficulty of ['easy', 'medium', 'hard', 'expert']) {
+      obj[challenge][difficulty] = {
+        val: 0,
+        time: 0
+    }
+  }
+  Vue.set(app, 'challenges', obj);
+})();
+
 // Splash screen animation
 (() => {
   window.addEventListener('load', () => {
@@ -1136,7 +1149,10 @@ function press(index, preventAnim, preventWin) {
         break;
 
       case 'challenges':
-
+        app.challenges[app.challenge.type][app.challenge.difficulty] = {
+          val: app.challengeProgress,
+          time: app.challenge.baseTime - app.challenge.currentTime
+        }
         app.score++;
         break;
     }
