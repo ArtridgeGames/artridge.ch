@@ -1017,21 +1017,20 @@ const app = new Vue({
     challengeProgress() {
       return Math.floor(((this.challenge.baseMoves - this.challenge.remainingMoves - this.challenge.lastDifficulty) / this.challenge.baseMoves) * 100);
     }
+  },
+  beforeMount() {
+    const obj = {};
+    for (const challenge of ['sprint', 'normal', 'marathon', 'endurance']) {
+      obj[challenge] = {}
+      for (const difficulty of ['easy', 'medium', 'hard', 'expert']) {
+        obj[challenge][difficulty] = {
+          val: 0,
+          time: 0
+        }
+      }
+    Vue.set(app, 'challenges', obj);
   }
 });
-
-(()=>{
-  const obj = {};
-  for (const challenge of ['sprint', 'normal', 'marathon', 'endurance']) {
-    obj[challenge] = {}
-    for (const difficulty of ['easy', 'medium', 'hard', 'expert']) {
-      obj[challenge][difficulty] = {
-        val: 0,
-        time: 0
-    }
-  }
-  Vue.set(app, 'challenges', obj);
-})();
 
 // Splash screen animation
 (() => {
