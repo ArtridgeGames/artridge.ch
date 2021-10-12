@@ -1707,6 +1707,10 @@ function selectChallengeDifficulty(difficulty) {
 
       if (app.challenge.currentTime <= 0) {
         openPopup(3);
+        app.challenges[app.challenge.type][app.challenge.difficultyName] = {
+          val: app.challengeProgress,
+          time: app.challenge.baseTime - app.challenge.currentTime
+        }
         window.clearInterval(app.challenge.intervalId);
       }
     }, 1e3);
