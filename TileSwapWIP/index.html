@@ -69,7 +69,7 @@
       <div class="screen layouts" v-show="screen === 'layouts'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <button class='sort' @click='sortBy("switch", "layouts")'>sort by:<br>{{layoutsSorting}}</button>
-        <button class='sort-order' @click='sortOrder *= -1; sortBy("size", "layouts")'>{{sortOrder === 1 ? 'ascending' : 'descending'}}</button>
+        <button class='sort-order' @click='sortOrder *= -1; sortBy(layoutsSorting, "layouts")'>{{sortOrder === 1 ? 'ascending' : 'descending'}}</button>
         <div class="screen-header">
           <p>select a layout</p>
           <p>{{score}}</p>
