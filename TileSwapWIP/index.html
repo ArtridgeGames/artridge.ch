@@ -145,11 +145,11 @@
         <h1 class="screen-header">{{challenge.type}}</h1>
 
         <div class="buttons">
-          <button @click="selectChallengeDifficulty(0);" :class="{ completed: challengeStats('easy').val === 100 }">easy {{ (challengeStats('easy').time !== 0 && challengeStats('easy').val !== 100) ? formatTime(challengeStats('easy').time) : '' }}</button>
-          <button @click="selectChallengeDifficulty(1);" :class="{ completed: challengeStats('medium').val === 100 }">medium {{ (challengeStats('medium').time !== 0 && challengeStats('medium').val !== 100) ? formatTime(challengeStats('medium').time) : '' }}</button>
-          <button @click="selectChallengeDifficulty(2);" :class="{ completed: challengeStats('hard').val === 100 }">hard {{ (challengeStats('hard').time !== 0 && challengeStats('hard').val !== 100) ? formatTime(challengeStats('hard').time) : '' }}</button>
-          <button @click="selectChallengeDifficulty(3);" :class="{ completed: challengeStats('expert').val === 100 }">expert {{ (challengeStats('expert').time !== 0 && challengeStats('expert').val !== 100) ? formatTime(challengeStats('expert').time) : '' }}</button>
-          <button @click="selectChallengeDifficulty(4);" v-show="challenge.type !== 'endurance'" disabled>endless (coming soon)</button>
+          <button @click="selectChallengeDifficulty('easy');" :class="{ completed: challengeStats('easy').val === 100 }">easy {{ challengeStats('easy').time !== 0 ? `(${formatTime(challengeStats('easy').time)})` : '' }}</button>
+          <button @click="selectChallengeDifficulty('medium');" :class="{ completed: challengeStats('medium').val === 100 }">medium {{ challengeStats('medium').time !== 0 ? `(${formatTime(challengeStats('medium').time)})` : '' }}</button>
+          <button @click="selectChallengeDifficulty('hard');" :class="{ completed: challengeStats('hard').val === 100 }">hard {{ challengeStats('hard').time !== 0 ? `(${formatTime(challengeStats('hard').time)})` : '' }}</button>
+          <button @click="selectChallengeDifficulty('expert');" :class="{ completed: challengeStats('expert').val === 100 }">expert {{ challengeStats('expert').time !== 0 ? `(${formatTime(challengeStats('expert').time)})` : '' }}</button>
+          <button @click="selectChallengeDifficulty('endurance');" v-show="challenge.type !== 'endurance'" disabled>endless (coming soon)</button>
         </div>
       </div>
 

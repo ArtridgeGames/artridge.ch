@@ -1083,8 +1083,19 @@ const app = new Vue({
       baseMoves: 0,
       remainingMoves: 0,
       lastDifficulty: 0,
-      intervalId: 0
+      intervalId: 0,
+      difficulty: 0,
+      difficultyName: '',
+      type: ''
     },
+    challenges: Object.fromEntries(['sprint', 'normal', 'marathon', 'endurance'].map(type => 
+      [type, Object.fromEntries(['easy', 'medium', 'hard', 'expert'].map(difficulty => 
+        ([difficulty, {
+          val: 0,
+          time: 0
+        }])
+      ))]
+    )),
     isRandomFreeplay: false,
     currentLayout: copy(layouts[0]),
     gameModes: [
@@ -1122,7 +1133,6 @@ const app = new Vue({
     },
     challengeStats(diff) {
       const type = this.challenge.type;
-      try {
         if (type) {
           return {
             val: this.challenges[type][diff].val,
@@ -1133,31 +1143,13 @@ const app = new Vue({
           val: 0,
           time: 0
         }
-      } catch (e) {
-        return {
-          val: 0,
-          time: 0
-        }
-      }
     }
   },
   computed: {
     challengeProgress() {
+      if (this.challenge.baseMoves === 0) return 0;
       return Math.floor(((this.challenge.baseMoves - this.challenge.remainingMoves - this.challenge.lastDifficulty) / this.challenge.baseMoves) * 100);
     }
-  },
-  beforeMount() {
-    const obj = {};
-    for (const challenge of ['sprint', 'normal', 'marathon', 'endurance']) {
-      obj[challenge] = {}
-      for (const difficulty of ['easy', 'medium', 'hard', 'expert']) {
-        obj[challenge][difficulty] = {
-          val: 0,
-          time: 0
-        }
-      }
-    }
-    Vue.set(app, 'challenges', obj);
   }
 });
 
@@ -1253,6 +1245,10 @@ function press(index, preventAnim, preventWin) {
 
   if (won && app.screen === 'challenges' && app.challenge.remainingMoves <= 0 && !preventWin) {
     won = false;
+    app.challenges[app.challenge.type][app.challenge.difficultyName] = {
+      val: 100,
+      time: app.challenge.baseTime - app.challenge.currentTime
+    }
     openPopup(2);
   }
 
@@ -1277,10 +1273,6 @@ function press(index, preventAnim, preventWin) {
         break;
 
       case 'challenges':
-        app.challenges[app.challenge.type][app.challenge.difficulty] = {
-          val: app.challengeProgress,
-          time: app.challenge.baseTime - app.challenge.currentTime
-        }
         app.score++;
         break;
     }
@@ -1582,6 +1574,8 @@ function selectChallenge(challenge) {
 }
 
 function selectChallengeDifficulty(difficulty) {
+  app.challenge.difficultyName = difficulty;
+  difficulty = ['easy', 'medium', 'hard', 'expert', 'endurance'].indexOf(difficulty);
   app.challenge.difficulty = difficulty;
   app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60) ;
   app.challenge.remainingMoves = app.challenge.baseMoves;
