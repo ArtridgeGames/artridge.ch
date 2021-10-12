@@ -1122,15 +1122,22 @@ const app = new Vue({
     },
     challengeStats(diff) {
       const type = this.challenge.type;
-      if (type) {
-        return {
-          val: this.challenges[type][diff].val,
-          time: this.challenges[type][diff].time
+      try {
+        if (type) {
+          return {
+            val: this.challenges[type][diff].val,
+            time: this.challenges[type][diff].time
+          }
         }
-      }
-      return {
-        val: 0,
-        time: 0
+        return {
+          val: 0,
+          time: 0
+        }
+      } catch (e) {
+        return {
+          val: 0,
+          time: 0
+        }
       }
     }
   },
