@@ -409,10 +409,6 @@ const layouts = [
   },
   {
     dimensions: '3x5',
-    exclude: [2,4,8,10,14] 
-  },
-  {
-    dimensions: '3x5',
     exclude: [2,4,7,10,14] 
   },
   {
