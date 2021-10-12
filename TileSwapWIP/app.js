@@ -1119,6 +1119,19 @@ const app = new Vue({
     formatTime(time) {
       const date = new Date(time * 1000);
       return `${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+    },
+    challengeStats(diff) {
+      const type = this.challenge.type;
+      if (type) {
+        return {
+          val: this.challenges[type][diff].val,
+          time: this.challenges[type][diff].time
+        }
+      }
+      return {
+        val: 0,
+        time: 0
+      }
     }
   },
   computed: {
