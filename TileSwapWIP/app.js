@@ -3,15 +3,15 @@ let isRecording = false;
 let recordedMoves = [];
 
 /*unlockCategory descriptions:
-1: 3x3
-2: pack of 3x3 variants
-3: alphabet letters pack 1
-4: alphabet letters pack 2
-5: 4x4
-6: pack of small grids 1
-7: pack of small grids 2
-8: pack of small grids 3
-9: pack of small grids 4
+1:  3x3
+2:  pack of 3x3 variants
+3:  alphabet letters pack 1
+4:  alphabet letters pack 2
+5:  4x4
+6:  pack of small grids 1
+7:  pack of small grids 2
+8:  pack of small grids 3
+9:  pack of small grids 4
 10: pack of dotted grids
 11: 5x5
 12: pack of 5x5 variants 1
@@ -1588,10 +1588,10 @@ const app = new Vue({
       type: ''
     },
     challenges: Object.fromEntries(['sprint', 'normal', 'marathon', 'endurance'].map(type => 
-      [type, Object.fromEntries(['easy', 'medium', 'hard', 'expert'].map(difficulty => 
+      [type, Object.fromEntries(['easy', 'medium', 'hard', 'expert', 'endless'].map(difficulty => 
         ([difficulty, {
           val: 0,
-          time: 0
+          time: -1
         }])
       ))]
     )),
@@ -1637,9 +1637,16 @@ const app = new Vue({
     challengeStats(diff) {
       const type = this.challenge.type;
         if (type) {
-          return {
-            val: this.challenges[type][diff].val,
-            time: this.challenges[type][diff].time
+          if (diff === 'endless') {
+            return {
+              completed: !!this.challenges[type]['endless'].completed,
+              val: this.challenges[type]['endless'].val
+            }
+          } else {
+            return {
+              val: this.challenges[type][diff].val,
+              time: this.challenges[type][diff].time
+            }
           }
         }
         return {
@@ -1651,6 +1658,7 @@ const app = new Vue({
   computed: {
     challengeProgress() {
       if (this.challenge.baseMoves === 0) return 0;
+      if (this.challenge.endless) return this.challenge.completedMoves;
       return Math.floor(((this.challenge.baseMoves - this.challenge.remainingMoves - this.challenge.lastDifficulty) / this.challenge.baseMoves) * 100);
     }
   }
@@ -1746,13 +1754,22 @@ function press(index, preventAnim, preventWin) {
 
   }
 
-  if (won && app.screen === 'challenges' && app.challenge.remainingMoves <= 0 && !preventWin) {
-    won = false;
-    app.challenges[app.challenge.type][app.challenge.difficultyName] = {
-      val: 100,
-      time: app.challenge.baseTime - app.challenge.currentTime
+  if (won && app.screen === 'challenges' && !preventWin) {
+    if (app.challenge.endless) {
+      console.log(app.challenge.lastDifficulty);
+      app.challenge.completedMoves += app.challenge.lastDifficulty;
+    } else if (app.challenge.remainingMoves <= 0) {
+      won = false;
+      const time = app.challenge.baseTime - app.challenge.currentTime;
+      const storedTime = app.challenges[app.challenge.type][app.challenge.difficultyName].time;
+      if (time < storedTime || storedTime === -1) {
+        app.challenges[app.challenge.type][app.challenge.difficultyName] = {
+          val: 100,
+          time: time
+        }
+      }
+      openPopup(2);
     }
-    openPopup(2);
   }
 
   if (won && !preventWin) {
@@ -1841,12 +1858,15 @@ function randomize(preventAnim) {
       document.getElementById('slider').value + Math.floor(Math.random() * 4);
 
   if (isChallenge) {
-    if (sliderValue > app.challenge.remainingMoves) sliderValue = app.challenge.remainingMoves;
-    app.challenge.remainingMoves -= sliderValue;
+    if (!app.challenge.endless) {
+      if (sliderValue > app.challenge.remainingMoves) sliderValue = app.challenge.remainingMoves;
+      app.challenge.remainingMoves -= sliderValue;
+    }
     app.challenge.lastDifficulty = sliderValue;
   }
   
   const previousTiles = [];
+
   for (let i = 0; i < sliderValue; i++) {
     let index;
     while (true) {
@@ -2081,10 +2101,16 @@ function selectChallenge(challenge) {
 
 function selectChallengeDifficulty(difficulty) {
   app.challenge.difficultyName = difficulty;
-  difficulty = ['easy', 'medium', 'hard', 'expert', 'endurance'].indexOf(difficulty);
+  difficulty = ['easy', 'medium', 'hard', 'expert', 'endless'].indexOf(difficulty);
   app.challenge.difficulty = difficulty;
-  app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60) ;
-  app.challenge.remainingMoves = app.challenge.baseMoves;
+  app.challenge.endless = difficulty === 4;
+  
+  if (app.challenge.endless) {
+    app.challenge.completedMoves = 0;
+  } else {
+    app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60) ;
+    app.challenge.remainingMoves = app.challenge.baseMoves;
+  }
 
   app.openScreen('challenges');
 
@@ -2096,11 +2122,27 @@ function selectChallengeDifficulty(difficulty) {
       if (!hasOpenedPopup()) app.challenge.currentTime--;
 
       if (app.challenge.currentTime <= 0) {
-        openPopup(3);
-        app.challenges[app.challenge.type][app.challenge.difficultyName] = {
-          val: app.challengeProgress,
-          time: app.challenge.baseTime - app.challenge.currentTime
+
+        if (app.challenge.endless) {
+          openPopup(4);
+          if (app.challenge.completedMoves > app.challenges[app.challenge.type]['endless'].val) {
+            app.challenges[app.challenge.type]['endless'] = {
+              val: app.challenge.completedMoves,
+              completed: true
+            }
+          }
+        } else {
+          openPopup(3);
+          const time = app.challenge.baseTime - app.challenge.currentTime;
+          const storedTime = app.challenges[app.challenge.type][app.challenge.difficultyName].time;
+          if (time < storedTime || storedTime === -1) {
+            app.challenges[app.challenge.type][app.challenge.difficultyName] = {
+              val: app.challengeProgress,
+              time: time
+            }
+          }
         }
+
         window.clearInterval(app.challenge.intervalId);
       }
     }, 1e3);

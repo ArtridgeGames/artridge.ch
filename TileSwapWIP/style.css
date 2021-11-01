@@ -321,8 +321,10 @@ h2 {
 .bottom-bar .right button {
   width: 80px;
   height: 80px;
-  border-radius: 50%;
   margin: 10px;
+  background-position: 50% 50%;
+  background-size: contain;
+  background-color: transparent;
 }
 
 @media only screen and (orientation: portrait) {

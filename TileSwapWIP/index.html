@@ -57,9 +57,9 @@
 
           <div class="right">
 
-            <button @click="openScreen('settings')"></button>
-            <button @click="openScreen('help')"></button>
-            <button @click="openScreen('stats')"></button>
+            <button style="background-image: url(images/settings.png);" @click="openScreen('settings')"></button>
+            <button style="background-image: url(images/settings.png);" @click="openScreen('help')"></button>
+            <button style="background-image: url(images/stats.png);" @click="openScreen('stats')"></button>
 
           </div>
 
@@ -82,7 +82,8 @@
         <button class='back' @click='openScreen(screen === "freeplay" ? "layouts" : (screen === "puzzles" ? "puzzles-selection" : "challenge-difficulty-selection"))'>back</button>
         
         <div class="screen-header" v-if="screen === 'challenges'">
-          <p>{{challenge.baseTime === -1 ? 'No time limit' : formatTime(challenge.currentTime)}} - {{ challengeProgress }}% completed</p>
+          <p v-if="!challenge.endless">{{challenge.baseTime === -1 ? 'No time limit' : formatTime(challenge.currentTime)}} - {{ challengeProgress }}% completed</p>
+          <p v-if="challenge.endless">{{formatTime(challenge.currentTime)}} - Score: {{ challenge.completedMoves }}</p>
         </div>
 
         <div class="puzzle-target" v-show="screen === 'puzzles'">
@@ -149,7 +150,7 @@
           <button @click="selectChallengeDifficulty('medium');" :class="{ completed: challengeStats('medium').val === 100 }">medium {{ challengeStats('medium').val === 100 ? `(${formatTime(challengeStats('medium').time)})` : (challengeStats('medium').val !== 0 ? `(${challengeStats('medium').val})` : '') }}</button>
           <button @click="selectChallengeDifficulty('hard');" :class="{ completed: challengeStats('hard').val === 100 }">hard {{ challengeStats('hard').val === 100 ? `(${formatTime(challengeStats('hard').time)})` : (challengeStats('hard').val !== 0 ? `(${challengeStats('hard').val})` : '') }}</button>
           <button @click="selectChallengeDifficulty('expert');" :class="{ completed: challengeStats('expert').val === 100 }">expert {{ challengeStats('expert').val === 100 ? `(${formatTime(challengeStats('expert').time)})` : (challengeStats('expert').val !== 0 ? `(${challengeStats('expert').val}%)` : '') }}</button>
-          <button @click="selectChallengeDifficulty('endurance');" v-show="challenge.type !== 'endurance'" disabled>endless (coming soon)</button>
+          <button @click="selectChallengeDifficulty('endless');" :class="{ completed: challengeStats('endless').completed }" v-show="challenge.type !== 'endurance'">endless {{ challengeStats('endless').completed ? `(${challengeStats('endless').val})` : '' }}</button>
         </div>
       </div>
 
@@ -190,7 +191,13 @@
       <div class="background" @click="closePopup(3); openScreen('challenge-selection');"></div>
       <div class="popup">
         <h1>no time left.</h1>
-        <button @click="closePopup(3); openScreen('challenge-selection');">retry</button>
+        <button @click="closePopup(3); openScreen('challenge-selection');">back</button>
+      </div>
+
+      <div class="background" @click="closePopup(4); openScreen('challenge-selection');"></div>
+      <div class="popup">
+        <h1>you completed the challenge with a score of {{ challenge.completedMoves }}</h1>
+        <button @click="closePopup(4); openScreen('challenge-selection');">back</button>
       </div>
 
     </div>
