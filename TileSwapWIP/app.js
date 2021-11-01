@@ -1571,11 +1571,15 @@ let counter = 0;
 const app = new Vue({
   el: '#app',
   data: {
+    user: null,
     screen: 'menu',
     score: 0,
     puzzleSorting: 'difficulty',
     layoutsSorting: 'size',
     sortOrder: 1,
+    stats: {
+      timePlayed: 0
+    },
     challenge: {
       baseTime: 0,
       currentTime: 0,
@@ -1653,6 +1657,17 @@ const app = new Vue({
           val: 0,
           time: 0
         }
+    },
+    secondsToDDHHMMSS(seconds) {
+      const fm = [
+        { n: Math.floor(seconds / 60 / 60 / 24), e: "d" }, // DAYS
+        { n: Math.floor(seconds / 60 / 60) % 24, e: "h" }, // HOURS
+        { n: Math.floor(seconds / 60) % 60, e: "m" }, // MINUTES
+        { n: seconds % 60, e: "s" } // SECONDS
+      ];
+      return fm.map((v) => { 
+        return ((v.n < 10) ? '0' : '') + v.n + v.e + ' '; 
+      }).join('');
     }
   },
   computed: {
@@ -1768,6 +1783,7 @@ function press(index, preventAnim, preventWin) {
           time: time
         }
       }
+      updateGameSave();
       openPopup(2);
     }
   }
@@ -1783,17 +1799,20 @@ function press(index, preventAnim, preventWin) {
     switch (app.screen) {
       case 'freeplay':
         app.score++;
+        updateGameSave();
         break;
     
       case 'puzzles':
         app.score++;
         puzzles[app.currentLayout.puzzleIndex].completed = true;
         sortBy(app.puzzleSorting);
+        updateGameSave();
         // document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
         break;
 
       case 'challenges':
         app.score++;
+        updateGameSave();
         break;
     }
   }
@@ -1833,11 +1852,17 @@ function closePopup(i) {
   }
 }
 
-window.setInterval(() => {
+setInterval(() => {
   const slider = document.getElementById('slider');
   const difficulties = ['very easy', 'easy', 'normal', 'hard', 'very hard'];
   document.getElementById('difficulty').innerHTML = difficulties[Math.floor((slider.value - 1) / (slider.max / difficulties.length))];
-}, 50)
+}, 50);
+
+setInterval(() => {
+  app.stats.timePlayed++;
+}, 1e3);
+
+setInterval(updateGameSave, 1e4);
 
 function randomize(preventAnim) {
 
@@ -2133,15 +2158,16 @@ function selectChallengeDifficulty(difficulty) {
           }
         } else {
           openPopup(3);
-          const time = app.challenge.baseTime - app.challenge.currentTime;
-          const storedTime = app.challenges[app.challenge.type][app.challenge.difficultyName].time;
-          if (time < storedTime || storedTime === -1) {
+          const storedVal = app.challenges[app.challenge.type][app.challenge.difficultyName].val;
+          if (app.challengeProgress > storedVal) {
             app.challenges[app.challenge.type][app.challenge.difficultyName] = {
               val: app.challengeProgress,
               time: time
             }
           }
         }
+
+        updateGameSave();
 
         window.clearInterval(app.challenge.intervalId);
       }
@@ -2165,9 +2191,6 @@ function sortBy(sorting, menu = "puzzles") {
   if (menu === "puzzles") {
     if (sorting === "switch") {
       if (app.puzzleSorting === "difficulty") {
-        sorting = "size";
-        app.puzzleSorting = sorting;
-      } else if (app.puzzleSorting === "size") {
         sorting = "completion";
         app.puzzleSorting = sorting;
       } else if (app.puzzleSorting === "completion") {
@@ -2184,24 +2207,25 @@ function sortBy(sorting, menu = "puzzles") {
       puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
     }
     updatePuzzlesContainer();
-} else if (menu === 'layouts') {
-  if (sorting === "switch") {
-      if (app.layoutsSorting === "size") {
-        sorting = "completion";
-        app.layoutsSorting = "completion";
-      } else {
-        sorting = "size";
-        app.layoutsSorting = "size";
-      }
+  } else if (menu === 'layouts') {
+    if (sorting === "switch") {
+        if (app.layoutsSorting === "size") {
+          sorting = "completion";
+          app.layoutsSorting = "completion";
+        } else {
+          sorting = "size";
+          app.layoutsSorting = "size";
+        }
+    }
+    if (sorting === "size") {
+      layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * app.sortOrder);
+    } else if (sorting === "completion") {
+      layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length))  * app.sortOrder);
+      layouts.sort((a, b) => (a.completed - b.completed) * -1 * app.sortOrder);   
+    }
+    updateLayoutsContainer();
   }
-  if (sorting === "size") {
-    layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * app.sortOrder);
-  } else if (sorting === "completion") {
-    layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length))  * app.sortOrder);
-    layouts.sort((a, b) => (a.completed - b.completed) * -1 * app.sortOrder);   
-  }
-  updateLayoutsContainer();
-}}
+}
 
 function setAll(white) {
   document.querySelectorAll('.tile').forEach(e => {
@@ -2433,5 +2457,41 @@ function toggleRecording() {
       if (n % 2 !== 0) arr.push(i);
     }
     alert(arr);
+  }
+}
+
+firebase.auth().onAuthStateChanged(async (user) => {
+  app.user = user ?? null;
+
+  if (app.user) {
+    const result = await firebase.database().ref(`users/${app.user.uid}/game-data/tileswap`).once('value');
+    const data = result.val();
+
+    if (data) {
+      if (data.score) app.score = data.score;
+      if (data.challenges) app.challenges = data.challenges;
+      if (data.stats) app.stats = data.stats;
+  
+      if (data.completedPuzzles) {
+        for (const index of data.completedPuzzles) {
+          puzzles[index].completed = true;
+        }
+        updatePuzzlesContainer();
+      }
+    }
+
+  } 
+});
+
+function updateGameSave() {
+  if (app.user) {
+    firebase.database().ref(`users/${app.user.uid}/game-data/tileswap`).set({
+      score: app.score,
+      challenges: app.challenges,
+      completedPuzzles: puzzles.map((e, i) => [i, e.completed])
+                               .filter(([i, completed]) => completed)
+                               .map(([i]) => i),
+      stats: app.stats
+    });
   }
 }

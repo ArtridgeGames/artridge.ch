@@ -167,6 +167,10 @@
       <div class="screen stats" v-show="screen === 'stats'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <h1 class="screen-header">Stats</h1>
+
+        <ul>
+          <li>Time played: {{ secondsToDDHHMMSS(stats.timePlayed) }}</li>
+        </ul>
       </div>
 
       <div class="background" @click="closePopup(0);"></div>
@@ -201,6 +205,21 @@
       </div>
 
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-database.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAbUbveOjn6VMB1QaAZHIR2hYxFfEbQ2Qo", authDomain: "artridge-website.firebaseapp.com", databaseURL: "https://artridge-website.firebaseio.com", projectId: "artridge-website", storageBucket: "artridge-website.appspot.com", messagingSenderId: "554359864126", appId: "1:554359864126:web:56901925bba81278fb0a6f", measurementId: "G-0KJBNGLJL4"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+
     <script src="app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.12.1/TweenMax.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

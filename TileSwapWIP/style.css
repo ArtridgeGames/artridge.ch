@@ -28,6 +28,10 @@ body, html {
   height: 100%;
 }
 
+li {
+  color: white;
+}
+
 #main {
   position: absolute;
   top: 50%;
