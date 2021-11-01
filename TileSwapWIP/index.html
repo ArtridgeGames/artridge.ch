@@ -157,6 +157,8 @@
       <div class="screen settings" v-show="screen === 'settings'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <h1 class="screen-header">settings</h1>
+        <p v-if="user">You are logged in as <a href="https://artridge.ch/#Account">{{ user.displayName }}</a>.</p>
+        <p v-if="!user">Please login or sign up on <a href="https://artridge.ch/#Account">artridge.ch</a>.</p>
       </div>
 
       <div class="screen help" v-show="screen === 'help'">

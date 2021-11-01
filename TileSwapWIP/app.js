@@ -1771,7 +1771,6 @@ function press(index, preventAnim, preventWin) {
 
   if (won && app.screen === 'challenges' && !preventWin) {
     if (app.challenge.endless) {
-      console.log(app.challenge.lastDifficulty);
       app.challenge.completedMoves += app.challenge.lastDifficulty;
     } else if (app.challenge.remainingMoves <= 0) {
       won = false;
@@ -2466,12 +2465,11 @@ firebase.auth().onAuthStateChanged(async (user) => {
   if (app.user) {
     const result = await firebase.database().ref(`users/${app.user.uid}/game-data/tileswap`).once('value');
     const data = result.val();
-
+    
     if (data) {
       if (data.score) app.score = data.score;
       if (data.challenges) app.challenges = data.challenges;
       if (data.stats) app.stats = data.stats;
-  
       if (data.completedPuzzles) {
         for (const index of data.completedPuzzles) {
           puzzles[index].completed = true;
