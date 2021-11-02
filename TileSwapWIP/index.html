@@ -79,7 +79,7 @@
       </div>
 
       <div class="screen freeplay" v-show="screen === 'freeplay' || screen === 'puzzles' || screen === 'challenges'">
-        <button class='back' @click='openScreen(screen === "freeplay" ? "layouts" : (screen === "puzzles" ? "puzzles-selection" : "challenge-difficulty-selection"))'>back</button>
+        <button class='back' @click='screen === "challenges" ? openPopup(5) : openScreen(screen === "freeplay" ? "layouts" : "puzzles-selection")'>back</button>
         
         <div class="screen-header" v-if="screen === 'challenges'">
           <p v-if="!challenge.endless">{{challenge.baseTime === -1 ? 'No time limit' : formatTime(challenge.currentTime)}} - {{ challengeProgress }}% completed</p>
@@ -154,25 +154,29 @@
         </div>
       </div>
 
-      <div class="screen settings" v-show="screen === 'settings'">
+      <div class="screen settings white" v-show="screen === 'settings'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <h1 class="screen-header">settings</h1>
-        <p v-if="user">You are logged in as <a href="https://artridge.ch/#Account">{{ user.displayName }}</a>.</p>
-        <p v-if="!user">Please login or sign up on <a href="https://artridge.ch/#Account">artridge.ch</a>.</p>
+        <main>
+          <p v-if="user">You are logged in as <a href="https://artridge.ch/#Account">{{ user.displayName }}</a>.</p>
+          <p v-if="!user">Please login or sign up on <a href="https://artridge.ch/#Account">artridge.ch</a>.</p>
+        </main>
       </div>
 
-      <div class="screen help" v-show="screen === 'help'">
+      <div class="screen help white" v-show="screen === 'help'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <h1 class="screen-header">Help</h1>
       </div>
 
-      <div class="screen stats" v-show="screen === 'stats'">
+      <div class="screen stats white" v-show="screen === 'stats'">
         <button class='back' @click='openScreen("menu")'>back</button>
         <h1 class="screen-header">Stats</h1>
 
-        <ul>
-          <li>Time played: {{ secondsToDDHHMMSS(stats.timePlayed) }}</li>
-        </ul>
+        <main>
+          <ul>
+            <li v-for="stat in stats">{{ stat.name }}: {{ stat.display(stat.val) }}</li>
+          </ul>
+        </main>
       </div>
 
       <div class="background" @click="closePopup(0);"></div>
@@ -188,10 +192,10 @@
         <button @click="closePopup(1); openScreen('puzzles-selection');">back</button>
       </div>
 
-      <div class="background" @click="closePopup(2); openScreen('menu')"></div>
+      <div class="background" @click="closePopup(2); openScreen('challenge-selection')"></div>
       <div class="popup">
         <h1>you completed the challenge!</h1>
-        <button @click="closePopup(2); openScreen('menu')">yay!</button>
+        <button @click="closePopup(2); openScreen('challenge-selection')">yay!</button>
       </div>
 
       <div class="background" @click="closePopup(3); openScreen('challenge-selection');"></div>
@@ -204,6 +208,13 @@
       <div class="popup">
         <h1>you completed the challenge with a score of {{ challenge.completedMoves }}</h1>
         <button @click="closePopup(4); openScreen('challenge-selection');">back</button>
+      </div>
+
+      <div class="background" @click="closePopup(5);"></div>
+      <div class="popup">
+        <h1>are you sure you want to quit the challenge?</h1>
+        <button @click="closePopup(5); openScreen('challenge-selection');">yes</button>
+        <button @click="closePopup(5);">no</button>
       </div>
 
     </div>
