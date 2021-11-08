@@ -2567,7 +2567,11 @@ firebase.auth().onAuthStateChanged(async (user) => {
     if (data) {
       if (data.score) app.score = data.score;
       if (data.challenges) app.challenges = data.challenges;
-      if (data.stats) app.stats = data.stats;
+      if (data.stats) {
+        for (const [k, v] of Object.entries(data.stats)) {
+          app.stats[k].val = v;
+        }
+      }
       if (data.completedPuzzles) {
         for (const index of data.completedPuzzles) {
           puzzles[index].completed = true;
