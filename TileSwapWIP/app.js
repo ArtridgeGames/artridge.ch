@@ -2211,7 +2211,7 @@ function retryPuzzle() {
 
 function selectChallenge(challenge) {
   app.challenge.type = challenge;
-  app.challenge.baseTime = [15, 3 * 60, 5 * 60, -1][
+  app.challenge.baseTime = [60, 3 * 60, 5 * 60, -1][
     ['sprint',
      'normal',
      'marathon',
