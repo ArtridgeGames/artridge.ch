@@ -2587,7 +2587,7 @@ function updateGameSave() {
       completedPuzzles: puzzles.map((e, i) => [i, e.completed])
                                .filter(([i, completed]) => completed)
                                .map(([i]) => i),
-      stats: app.stats
+      stats: Object.fromEntries(Object.entries(app.stats).map(([k, v]) => [k, v.val]))
     });
   }
 }
