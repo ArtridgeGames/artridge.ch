@@ -2431,6 +2431,41 @@ function getHardestLayout() {
   return allMoves;
 }
 
+function matrixToLayout(matrix) {
+  const width = matrix[0].length;
+  const height = matrix.length;
+  const exclude = [];
+  let index = 0; 
+  for (const row of matrix) {
+    for (const el of row) {
+      if (el === 2) exclude.push(index);
+      index++;
+    }
+  }
+  return {
+    width, height, exclude
+  }
+}
+
+function rotatePattern() {
+  const layout = matrixToLayout(rotateMatrix(getGrid()));
+  updateLayout(layout);
+  randomize(true);
+}
+
+function rotateMatrix(grid){
+  const n = grid.length;
+  const m = grid[0].length;
+  const output = Array(m).fill().map(e => Array(n).fill(0));
+  
+  for (let i = 0; i < n; i++) {
+    for (let j = 0;j < m; j++) {
+      output[j][n-1-i] = grid[i][j];
+    }
+  }
+  return output;
+}
+
 function help() {
   console.table({
     'setAll(white)': 'sets all the tiles of the current layout to black, or white if the first parameter is truthy',

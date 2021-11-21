@@ -86,9 +86,7 @@
           <p v-if="challenge.endless">{{formatTime(challenge.currentTime)}} - Score: {{ challenge.completedMoves }}</p>
         </div>
 
-        <div class="puzzle-target" v-show="screen === 'puzzles'">
-
-        </div>
+        <div class="puzzle-target" v-show="screen === 'puzzles'"></div>
 
         <div class="puzzle-info" v-show="screen === 'puzzles'">
           <h1></h1>
@@ -103,6 +101,7 @@
         <div id="controls" v-show="screen === 'freeplay'">
           <div class="buttons">
             <button id="randomize" onclick="randomize(true);">randomize</button>
+            <button id="rotate" onclick="rotatePattern();">rotate</button>
           </div>
           <div class="difficulty">
             <h2>difficulty - <span id="difficulty"></span></h2>
