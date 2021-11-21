@@ -1570,58 +1570,139 @@ let counter = 0;
 
 const app = new Vue({
   el: '#app',
-  data: {
-    user: null,
-    screen: 'menu',
-    score: 0,
-    puzzleSorting: 'difficulty',
-    layoutsSorting: 'size',
-    sortOrder: 1,
-    stats: {
-      timePlayed: 0
-    },
-    challenge: {
-      baseTime: 0,
-      currentTime: 0,
-      baseMoves: 0,
-      remainingMoves: 0,
+  data: function() {
+    const that = this;
+    return {
+      user: null,
+      screen: 'menu',
+      score: 0,
+      puzzleSorting: 'difficulty',
+      layoutsSorting: 'size',
+      sortOrder: 1,
       lastDifficulty: 0,
-      intervalId: 0,
-      difficulty: 0,
-      difficultyName: '',
-      type: ''
-    },
-    challenges: Object.fromEntries(['sprint', 'normal', 'marathon', 'endurance'].map(type => 
-      [type, Object.fromEntries(['easy', 'medium', 'hard', 'expert', 'endless'].map(difficulty => 
-        ([difficulty, {
-          val: 0,
-          time: -1
-        }])
-      ))]
-    )),
-    isRandomFreeplay: false,
-    currentLayout: copy(layouts[0]),
-    layoutIndex: 0,
-    gameModes: [
-      {
-        title: 'freeplay',
-        fn: () => {
-          app.screen = 'layouts'
+      openedPopups: new Set(),
+      stats: {
+        timePlayed: {
+          name: 'Time played',
+          _val: 0,
+          get val() {
+            return this._val;
+          },
+          set val(n) {
+            this._val = n;
+          },
+          display: that.secondsToDDHHMMSS
+        },
+        score: {
+          name: 'Score',
+          get val() {
+            return that.score;
+          },
+          set val(n) {
+            that.score = n;
+          },
+          display: e => e
+        },
+        layoutsSolved: {
+          name: 'Layouts solved',
+          _val: 0,
+          get val() {
+            return this._val;
+          },
+          set val(n) {
+            this._val = n;
+          },
+          display: e => e
+        },
+        tilesSwapped: {
+          name: 'Tiles Swapped',
+          _val: 0,
+          get val() {
+            return this._val;
+          },
+          set val(n) {
+            this._val = n;
+          },
+          display: e => e
+        },
+        puzzlesCompleted: {
+          name: 'Puzzles Completed',
+          get val() {
+            return puzzles.filter(e => e.completed).length;
+          },
+          set val(n) {
+            this._val = n;
+          },
+          display: e => `${e} / ${puzzles.length}`
+        },
+        challengesCompleted: {
+          name: 'Challenges Completed',
+          get val() {
+            let completed = 0;
+            for (const [typeKey, typeVal] of Object.entries(that.challenges)) {
+              for (const [diffKey, diffVal] of Object.entries(typeVal)) {
+                if (diffVal.val === 100) {
+                  completed++;
+                  continue;
+                }
+
+                if (diffKey === 'endless') {
+                  if (diffVal.completed) completed++;
+                }
+                
+              }
+            }
+            return completed;
+          },
+          set val(n) {
+            this._val = n;
+          },
+          display: e => `${e} / 19`
         }
       },
-      {
-        title: 'puzzles',
-        fn: () => {
-          app.screen = 'puzzles-selection'
-        }
+      challenge: {
+        baseTime: 0,
+        currentTime: 0,
+        baseMoves: 0,
+        remainingMoves: 0,
+        lastDifficulty: 0,
+        intervalId: 0,
+        difficulty: 0,
+        difficultyName: '',
+        type: ''
       },
-      {
-        title: 'challenges',
-        fn: () => {
-          app.screen = 'challenge-selection'
+      challenges: Object.fromEntries(['sprint', 'normal', 'marathon', 'endurance'].map(type => 
+        [type, Object.fromEntries(['easy', 'medium', 'hard', 'expert', 'endless'].map(difficulty => 
+          ([difficulty, {
+            val: 0,
+            time: -1
+          }])
+        ))]
+      )),
+      isRandomFreeplay: false,
+      currentLayout: copy(layouts[0]),
+      layoutIndex: 0,
+      gameModes: [
+        {
+          title: 'freeplay',
+          fn: () => {
+            app.screen = 'layouts'
+          }
+        },
+        {
+          title: 'puzzles',
+          fn: () => {
+            app.screen = 'puzzles-selection'
+          }
+        },
+        {
+          title: 'challenges',
+          fn: () => {
+            app.screen = 'challenge-selection'
+          }
         }
-      }
-    ]
+      ]
+    }
   },
   methods: {
     openScreen(screen) {
@@ -1733,6 +1814,7 @@ function press(index, preventAnim, preventWin) {
 
   const tiles = document.querySelectorAll('button.tile');
 
+  let tilesSwapped = 0;
   for (let i = 0; i < dirx.length; i++) {
     var tileX = (index % app.currentLayout.width) + diry[i];
     var tileY = Math.floor(index / app.currentLayout.width) + dirx[i];
@@ -1745,6 +1827,7 @@ function press(index, preventAnim, preventWin) {
         tile.setAttribute('data-col', 'black');
       }
       if (!preventAnim) {
+        if (tile.getAttribute('data-disabled') === 'false') tilesSwapped++;
         const duration = 0.3;
         const delay = 0.08;
         TweenMax.to(tile, duration, {scaleY: 1.6, ease: Expo.easeOut});
@@ -1753,6 +1836,8 @@ function press(index, preventAnim, preventWin) {
       }
     }
   }
+
+  app.stats.tilesSwapped.val += tilesSwapped;
   let won = true;
   if (app.screen === 'puzzles') {
 
@@ -1782,6 +1867,7 @@ function press(index, preventAnim, preventWin) {
           time: time
         }
       }
+      app.score += app.challenge.baseMoves * 3;
       updateGameSave();
       openPopup(2);
     }
@@ -1797,20 +1883,15 @@ function press(index, preventAnim, preventWin) {
 
     switch (app.screen) {
       case 'freeplay':
-        app.score++;
+        app.score += app.lastDifficulty;
         updateGameSave();
         break;
     
       case 'puzzles':
-        app.score++;
-        puzzles[app.currentLayout.puzzleIndex].completed = true;
+        const currentPuzzle = puzzles[app.currentLayout.puzzleIndex];
+        app.score += currentPuzzle.completed ? 1 : currentPuzzle.solution.length * 5;
+        currentPuzzle.completed = true;
         sortBy(app.puzzleSorting);
-        updateGameSave();
-        // document.querySelectorAll('.screen.puzzles .button')[app.currentLayout.puzzleIndex].classList.add('completed');
-        break;
-
-      case 'challenges':
-        app.score++;
         updateGameSave();
         break;
     }
@@ -1818,6 +1899,13 @@ function press(index, preventAnim, preventWin) {
 }
 
 function openPopup(i) {
+
+  if ([0,2].includes(i)) {
+    app.stats.layoutsSolved.val++;
+  }
+
+  app.openedPopups.add(i);
+
   window.setTimeout(function() {
     try {
       document.querySelectorAll('.popup span')[i].innerHTML = counter;
@@ -1835,35 +1923,40 @@ function openPopup(i) {
 }
 
 function closePopup(i) {
-  document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(0)';
-  document.querySelectorAll('.background')[i].style.opacity = '0';
-  window.setTimeout(() => {
-    document.querySelectorAll('.background')[i].style.display = 'none';
-  }, 300);
+  if (app.openedPopups.has(i)) {
+    app.openedPopups.delete(i);
+    document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(0)';
+    document.querySelectorAll('.background')[i].style.opacity = '0';
+    window.setTimeout(() => {
+      document.querySelectorAll('.background')[i].style.display = 'none';
+    }, 300);
 
-  if (i === 0) {
-    randomize(true);
-    if (app.screen === 'puzzles') {
-      app.openScreen('puzzles-selection');
-    } else if (app.screen === 'freeplay'){
-      layouts[app.layoutIndex].completed += 1;
+    if (i === 0) {
+      randomize();
+      if (app.screen === 'puzzles') {
+        app.openScreen('puzzles-selection');
+      } else if (app.screen === 'freeplay'){
+        layouts[app.layoutIndex].completed += 1;
+      }
     }
   }
 }
 
 setInterval(() => {
   const slider = document.getElementById('slider');
-  const difficulties = ['very easy', 'easy', 'normal', 'hard', 'very hard'];
-  document.getElementById('difficulty').innerHTML = difficulties[Math.floor((slider.value - 1) / (slider.max / difficulties.length))];
+  if (slider) {
+    const difficulties = ['very easy', 'easy', 'normal', 'hard', 'very hard'];
+    document.getElementById('difficulty').innerHTML = difficulties[Math.floor((slider.value - 1) / (slider.max / difficulties.length))];
+  }
 }, 50);
 
 setInterval(() => {
-  app.stats.timePlayed++;
+  app.stats.timePlayed.val++;
 }, 1e3);
 
 setInterval(updateGameSave, 1e4);
 
-function randomize(preventAnim) {
+function randomize() {
 
   const isChallenge = app.screen === 'challenges';
 
@@ -1879,7 +1972,7 @@ function randomize(preventAnim) {
 
   let sliderValue = 
       isChallenge ? (3 + Math.floor(Math.random() * 4)) :
-      document.getElementById('slider').value + Math.floor(Math.random() * 4);
+      parseInt(document.getElementById('slider').value) + Math.floor(Math.random() * 4);
 
   if (isChallenge) {
     if (!app.challenge.endless) {
@@ -1891,18 +1984,22 @@ function randomize(preventAnim) {
   
   const previousTiles = [];
 
+  let nClicks = 0;
   for (let i = 0; i < sliderValue; i++) {
     let index;
     while (true) {
       index = Math.floor(Math.random() * app.currentLayout.width * app.currentLayout.height);
       if (!app.currentLayout.exclude.includes(index) && !previousTiles.includes(index)) {
-        press(index, preventAnim, true);
+        press(index, true, true);
+        nClicks++;
         previousTiles.push(index);
         if (previousTiles.length > 3) previousTiles.splice(0,1);
         break;
       }
     }
   }
+
+  app.lastDifficulty = nClicks;
   counter = 0;
 
   let allWhite = true;
@@ -1912,7 +2009,7 @@ function randomize(preventAnim) {
     if (t.getAttribute('data-col') === 'white') allBlack = false;
     if (t.getAttribute('data-col') === 'black') allWhite = false;
   }
-  if (allWhite || allBlack) randomize(preventAnim);
+  if (allWhite || allBlack) randomize();
 }
 
 function setLayout(i) {
@@ -1963,7 +2060,7 @@ function updateLayoutsContainer() {
   el.addEventListener('click', () => {
     app.isRandomFreeplay = true;
     app.openScreen('freeplay');
-    randomize(true);
+    randomize();
   });
 
   layoutsContainer.appendChild(el);
@@ -1998,7 +2095,7 @@ function updateLayoutsContainer() {
       app.isRandomFreeplay = false;
       app.openScreen('freeplay')
       setLayout(i);
-      randomize(true);
+      randomize();
     });
 
     layoutsContainer.appendChild(el);
@@ -2132,7 +2229,7 @@ function selectChallengeDifficulty(difficulty) {
   if (app.challenge.endless) {
     app.challenge.completedMoves = 0;
   } else {
-    app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60) ;
+    app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60);
     app.challenge.remainingMoves = app.challenge.baseMoves;
   }
 
@@ -2148,6 +2245,7 @@ function selectChallengeDifficulty(difficulty) {
       if (app.challenge.currentTime <= 0) {
 
         if (app.challenge.endless) {
+          app.score += app.challenge.completedMoves;
           openPopup(4);
           if (app.challenge.completedMoves > app.challenges[app.challenge.type]['endless'].val) {
             app.challenges[app.challenge.type]['endless'] = {
@@ -2175,7 +2273,7 @@ function selectChallengeDifficulty(difficulty) {
 
   app.challenge.currentTime = app.challenge.baseTime;
 
-  randomize(true);
+  randomize();
 }
 
 function hasOpenedPopup() {
@@ -2504,7 +2602,11 @@ firebase.auth().onAuthStateChanged(async (user) => {
     if (data) {
       if (data.score) app.score = data.score;
       if (data.challenges) app.challenges = data.challenges;
-      if (data.stats) app.stats = data.stats;
+      if (data.stats) {
+        for (const [k, v] of Object.entries(data.stats)) {
+          app.stats[k].val = v;
+        }
+      }
       if (data.completedPuzzles) {
         for (const index of data.completedPuzzles) {
           puzzles[index].completed = true;
@@ -2524,7 +2626,7 @@ function updateGameSave() {
       completedPuzzles: puzzles.map((e, i) => [i, e.completed])
                                .filter(([i, completed]) => completed)
                                .map(([i]) => i),
-      stats: app.stats
+      stats: Object.fromEntries(Object.entries(app.stats).map(([k, v]) => [k, v.val]))
     });
   }
 }

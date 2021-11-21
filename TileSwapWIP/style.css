@@ -26,6 +26,9 @@ body, html {
   overflow: hidden;
   margin: 0;
   height: 100%;
+}
+
+.white {
   color: white;
 }
 
@@ -224,6 +227,10 @@ h2 {
   overflow-y: scroll;
   height: 100vh;
   position: relative;
+}
+
+.screen main {
+  text-align: center;
 }
 
 .screen.challenge-difficulty-selection .buttons, .screen.challenge-selection .buttons {
