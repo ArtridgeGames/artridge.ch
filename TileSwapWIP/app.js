@@ -2548,7 +2548,7 @@ function matrixToLayout(matrix) {
 function rotatePattern() {
   const layout = matrixToLayout(rotateMatrix(getGrid()));
   updateLayout(layout);
-  randomize(true);
+  randomize();
 }
 
 function rotateMatrix(grid){
