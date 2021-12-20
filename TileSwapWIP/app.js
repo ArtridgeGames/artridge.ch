@@ -818,7 +818,9 @@ layouts.forEach(e => {
   const dimensions = e.dimensions.split('x');
   e.width = parseInt(dimensions[0]);
   e.height = parseInt(dimensions[1]);
-  e.completed = 0
+  e.completed = 0;
+  e.level = 1;
+  e.experience = 0;
 });
 
 let puzzles = [
@@ -1884,6 +1886,20 @@ function press(index, preventAnim, preventWin) {
     switch (app.screen) {
       case 'freeplay':
         app.score += app.lastDifficulty;
+
+        const layout = layouts[app.layoutIndex];
+
+        layout.experience += app.lastDifficulty;
+
+        const max = (layout.width * layout.height - layout.exclude.length) * 2;
+
+        console.log(app.lastDifficulty, max)
+
+        if (layout.experience >= max && layout.level < 30) {
+          layout.level++;
+          layout.experience -= max;
+        }
+
         updateGameSave();
         break;
     
@@ -1984,14 +2000,14 @@ function randomize() {
   
   const previousTiles = [];
 
-  let nClicks = 0;
+  const indexes = new Set();
   for (let i = 0; i < sliderValue; i++) {
     let index;
     while (true) {
       index = Math.floor(Math.random() * app.currentLayout.width * app.currentLayout.height);
       if (!app.currentLayout.exclude.includes(index) && !previousTiles.includes(index)) {
         press(index, true, true);
-        nClicks++;
+        indexes.add(index);
         previousTiles.push(index);
         if (previousTiles.length > 3) previousTiles.splice(0,1);
         break;
@@ -1999,7 +2015,7 @@ function randomize() {
     }
   }
 
-  app.lastDifficulty = nClicks;
+  app.lastDifficulty = indexes.size;
   counter = 0;
 
   let allWhite = true;
@@ -2014,7 +2030,7 @@ function randomize() {
 
 function setLayout(i) {
   app.currentLayout = copy(layouts[i === undefined ? Math.floor(Math.random() * layouts.length) : i])
-  app.layoutIndex = i
+  app.layoutIndex = i;
   updateLayout();
 }
 
@@ -2051,6 +2067,7 @@ function updateTileSize() {
 }
 
 function updateLayoutsContainer() {
+
   let layoutsContainer = document.querySelector('.screen.layouts .layout-container');
   layoutsContainer.innerHTML = ''
   const el = document.createElement('div');
@@ -2067,9 +2084,10 @@ function updateLayoutsContainer() {
 
   for (let i = 0; i < layouts.length; i++) {
     const layout = layouts[i];
-    
+
     const el = document.createElement('div');
-    el.classList.add('button');
+    el.classList.add('button', 'freeplay-layout');
+    el.setAttribute('data-level', layout.level);
     
     let index = 0;
     const tileSize = 1 / Math.sqrt(layout.height * layout.width) * 60;
@@ -2211,7 +2229,7 @@ function retryPuzzle() {
 
 function selectChallenge(challenge) {
   app.challenge.type = challenge;
-  app.challenge.baseTime = [60, 3 * 60, 5 * 60, -1][
+  app.challenge.baseTime = [3, 3 * 60, 5 * 60, -1][
     ['sprint',
      'normal',
      'marathon',
@@ -2259,7 +2277,7 @@ function selectChallengeDifficulty(difficulty) {
           if (app.challengeProgress > storedVal) {
             app.challenges[app.challenge.type][app.challenge.difficultyName] = {
               val: app.challengeProgress,
-              time: time
+              time: app.challenge.currentTime
             }
           }
         }
@@ -2613,6 +2631,13 @@ firebase.auth().onAuthStateChanged(async (user) => {
         }
         updatePuzzlesContainer();
       }
+      if (data.layoutLevels) {
+        for (const layout of data.layoutLevels) {
+          layouts[layout.index].experience = layout.experience;
+          layouts[layout.index].level = layout.level;
+        }
+        updateLayoutsContainer();
+      }
     }
 
   } 
@@ -2626,7 +2651,10 @@ function updateGameSave() {
       completedPuzzles: puzzles.map((e, i) => [i, e.completed])
                                .filter(([i, completed]) => completed)
                                .map(([i]) => i),
-      stats: Object.fromEntries(Object.entries(app.stats).map(([k, v]) => [k, v.val]))
+      stats: Object.fromEntries(Object.entries(app.stats).map(([k, v]) => [k, v.val])),
+      layoutLevels: layouts.map(({ experience, level }, index) => ({
+        experience, level, index
+      })).filter(({ experience, level }) => experience > 0 || level > 1)
     });
   }
 }

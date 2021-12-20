@@ -206,6 +206,22 @@ h2 {
   position: relative;
 }
 
+.freeplay-layout::before {
+  content: attr(data-level);
+  position:  absolute;
+  color: white;
+  background-color: black;
+  padding: 5px;
+  border-radius: 5px;
+  width: 10px;
+  height: 10px;
+  top: -3px;
+  left: -3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .layout-container .button.text {
   display: flex;
   justify-content: center;
