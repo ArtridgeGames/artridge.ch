@@ -93,7 +93,7 @@
           <button class="retry" @click="retryPuzzle();">retry</button>
         </div>
         
-        <div id="main">
+        <div id="main" :style="{ '--primary': primaryColor, '--secondary': secondaryColor }">
           <div id="container">
             
           </div>
@@ -159,6 +159,36 @@
         <main>
           <p v-if="user">You are logged in as <a href="https://artridge.ch/#Account">{{ user.displayName }}</a>.</p>
           <p v-if="!user">Please login or sign up on <a href="https://artridge.ch/#Account">artridge.ch</a>.</p>
+
+          <h3>Cosmetics</h3>
+
+          <table>
+            <tbody>
+              <tr>
+                <td>Tile 1:</td>
+                <td>
+                  <button 
+                    v-for="color in colors"
+                    class="settings-color"
+                    :class="{ selected: color === primaryColor }"
+                    :style="{ backgroundColor: color }"
+                    @click="selectColor(1, color)"></button>
+                </td>
+              </tr>
+              <tr>
+                <td>Tile 2:</td>
+                <td>
+                  <button 
+                    v-for="color in colors"
+                    class="settings-color"
+                    :class="{ selected: color === secondaryColor }"
+                    :style="{ backgroundColor: color }"
+                    @click="selectColor(2, color)"></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
         </main>
       </div>
 

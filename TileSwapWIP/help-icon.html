@@ -16,17 +16,111 @@
       src: url(/assets/fonts/TileSwap.ttf);
     }
 
-    p {
-      font-family: TileSwap;
-      font-size: 200px;
+    .tile {
+      --tile-size: 100px;
+      width: var(--tile-size);
+      height: var(--tile-size);
+      background-color: #ffffff;
+      margin: 7px;
+      display: inline-block;
+      color: white;
+      border-radius: 7px;
+      border: none;
+      animation: show 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .tile .circle {
+      content: '';
       position: absolute;
-      top: 50%; left: 50%;
+      width: 30px; height: 30px;
+      background-color: white;
+      border-radius: 50%;
+      top: calc(50px - 15px);
+      left: calc(-15px);
+    }
+
+    .tile[data-col='black'] {
+      background-color: #000000;
+    }
+
+    main {
+      position: absolute;
+      left: 50%; top: 50%;
       transform: translate(-50%, -50%);
-      margin: 0;
     }
   </style>
 </head>
 <body>
-  <p>?</p>
+
+  <main>
+    <div class="row">
+      <div class="tile" data-col="black">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+      <div class="tile">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+      <div class="tile">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="tile">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+      <div class="tile">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+      <div class="tile" data-col="black">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="tile">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+      <div class="tile" data-col="black">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+      <div class="tile">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- <div class="circles">
+    <div class="circle" data-col="black" style="top: 50px; left: 100px;"></div>
+  </div> -->
+
+
 </body>
 </html>

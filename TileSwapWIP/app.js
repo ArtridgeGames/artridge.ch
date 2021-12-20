@@ -1582,6 +1582,9 @@ const app = new Vue({
       layoutsSorting: 'size',
       sortOrder: 1,
       lastDifficulty: 0,
+      colors: ['white', 'black', 'red', 'blue', 'MediumOrchid', 'OliveDrab', 'Teal', 'Chocolate'],
+      primaryColor: 'white',
+      secondaryColor: 'black',
       openedPopups: new Set(),
       stats: {
         timePlayed: {
@@ -1720,6 +1723,16 @@ const app = new Vue({
     formatTime(time) {
       const date = new Date(time * 1000);
       return `${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+    },
+    selectColor(type, color) {
+      if (type === 1 && this.secondaryColor !== color) {
+        this.primaryColor = color;
+        return;
+      }
+
+      if (this.primaryColor !== color) {
+        this.secondaryColor = color;
+      }
     },
     challengeStats(diff) {
       const type = this.challenge.type;
@@ -2229,7 +2242,7 @@ function retryPuzzle() {
 
 function selectChallenge(challenge) {
   app.challenge.type = challenge;
-  app.challenge.baseTime = [3, 3 * 60, 5 * 60, -1][
+  app.challenge.baseTime = [60, 3 * 60, 5 * 60, -1][
     ['sprint',
      'normal',
      'marathon',
