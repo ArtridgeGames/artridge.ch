@@ -2268,7 +2268,7 @@ function selectChallengeDifficulty(difficulty) {
   if (app.challenge.endless) {
     app.challenge.completedMoves = 0;
   } else {
-    app.challenge.baseMoves = [7, 40, 60, 100, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60);
+    app.challenge.baseMoves = [15, 40, 60, 85, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60);
     app.challenge.remainingMoves = app.challenge.baseMoves;
   }
 
