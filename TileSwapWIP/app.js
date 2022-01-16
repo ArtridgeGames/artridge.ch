@@ -1576,6 +1576,7 @@ const app = new Vue({
     const that = this;
     return {
       user: null,
+      isMobile: false,
       screen: 'menu',
       score: 0,
       puzzleSorting: 'difficulty',
@@ -2062,11 +2063,14 @@ if ('ontouchstart' in document.documentElement) {
     let difficulty = parent.querySelector('.difficulty');
     if (window.innerWidth > window.innerHeight) {
       parent.insertBefore(buttons, difficulty);
+      app.isMobile = false;
     } else {
       parent.insertBefore(difficulty, buttons);
+      app.isMobile = true;
     }
 
     updateTileSize();
+    updateLayoutsContainer();
   }
   window.addEventListener('resize', func);
   window.addEventListener('load', func);
@@ -2102,15 +2106,17 @@ function updateLayoutsContainer() {
     el.classList.add('button', 'freeplay-layout');
     el.setAttribute('data-level', layout.level);
     
+    const multiplier = innerWidth < innerHeight ? 2 : 1;
+
     let index = 0;
-    const tileSize = 1 / Math.sqrt(layout.height * layout.width) * 60;
+    const tileSize = 1 / Math.sqrt(layout.height * layout.width) * 50 * multiplier;
     for (let y = 0; y < layout.height; y++) {
       for (let x = 0; x < layout.width; x++) {
         if (!layout.exclude.includes(index)) {
           let square = document.createElement('div');
 
-          let xPos = x * tileSize + 50 - layout.width * tileSize / 2;
-          let yPos = y * tileSize + 50 - layout.height * tileSize / 2;
+          let xPos = x * tileSize + 50 * multiplier - layout.width * tileSize / 2;
+          let yPos = y * tileSize + 50 * multiplier - layout.height * tileSize / 2;
 
           square.style.transform = `translate(${xPos}px, ${yPos}px)`;
           square.style.width = `${tileSize - 1}px`;
@@ -2156,15 +2162,17 @@ function updatePuzzlesContainer() {
     el.classList.add('button');
     if (puzzle.completed) el.classList.add('completed');
 
+    const multiplier = innerWidth < innerHeight ? 2 : 1;
+
     index = 0;
-    const tileSize = 1 / Math.sqrt(height * width) * 60;
+    const tileSize = 1 / Math.sqrt(height * width) * 50 * multiplier;
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         if (!exclude.includes(index)) {
           let square = document.createElement('div');
 
-          let xPos = x * tileSize + 50 - width * tileSize / 2;
-          let yPos = y * tileSize + 50 - height * tileSize / 2;
+          let xPos = x * tileSize + 50 * multiplier - width * tileSize / 2;
+          let yPos = y * tileSize + 50 * multiplier - height * tileSize / 2;
 
           square.style.transform = `translate(${xPos}px, ${yPos}px)`;
           square.style.width = `${tileSize - 1}px`;
@@ -2316,41 +2324,53 @@ function hasOpenedPopup() {
 }
 
 function sortBy(sorting, menu = "puzzles") {
+
   if (menu === "puzzles") {
-    if (sorting === "switch") {
-      if (app.puzzleSorting === "difficulty") {
-        sorting = "completion";
-        app.puzzleSorting = sorting;
-      } else if (app.puzzleSorting === "completion") {
-        sorting = "difficulty";
-        app.puzzleSorting = sorting;
+
+    const sortings = ['difficulty', 'difficulty', 'completion', 'completion'];
+
+    if (sorting === 'switch') {
+      sorting = sortings[(sortings.indexOf(app.puzzleSorting) + 1) % 4];
+      
+      
+      if (app.isMobile) {
+        app.sortOrder *= -1;
+        if (app.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
       }
+      
+      app.puzzleSorting = sorting;
     }
+
     if (sorting === "difficulty") {
       puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-    } else if (sorting === "size") {
-      puzzles.sort((a, b) => (a.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0) - b.base.flat().reduce((acc,v) => acc + Number(v !== 2), 0)) * app.sortOrder);
     } else if (sorting === "completion") {
       puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
       puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
     }
+
     updatePuzzlesContainer();
   } else if (menu === 'layouts') {
-    if (sorting === "switch") {
-        if (app.layoutsSorting === "size") {
-          sorting = "completion";
-          app.layoutsSorting = "completion";
-        } else {
-          sorting = "size";
-          app.layoutsSorting = "size";
-        }
+    const sortings = ['size', 'size', 'completion', 'completion', 'size', 'size'];
+
+    if (sorting === 'switch') {
+      sorting = sortings[(sortings.indexOf(app.layoutsSorting) + 1) % 4];
+      
+      
+      if (app.isMobile) {
+        app.sortOrder *= -1;
+        if (app.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
+      }
+      
+      app.layoutsSorting = sorting;
     }
-    if (sorting === "size") {
+
+    if (sorting === 'size') {
       layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * app.sortOrder);
-    } else if (sorting === "completion") {
+    } else if (sorting === 'completion') {
       layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length))  * app.sortOrder);
       layouts.sort((a, b) => (a.completed - b.completed) * -1 * app.sortOrder);   
     }
+
     updateLayoutsContainer();
   }
 }

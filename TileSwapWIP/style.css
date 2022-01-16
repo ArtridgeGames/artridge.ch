@@ -1,6 +1,6 @@
 :root {
   --text-size-desktop: 25px;
-  --text-size-mobile: 60px;
+  --text-size-mobile: 55px;
   --tile-size: 100px;
 
   --title-size: 55px;
@@ -371,14 +371,15 @@ h2 {
   border: 3px solid var(--success);
 }
 
+ul {
+  list-style-position: inside;
+}
+
 @media only screen and (orientation: portrait) {
   #controls {
     top: unset;
     bottom: 10px;
     width: calc(100vw - 10px);
-  }
-  button {
-    width: 100%;
   }
   #back {
     width: 160px !important;
@@ -404,10 +405,7 @@ h2 {
   #slider::-webkit-slider-thumb {
     -webkit-appearance: none;
   }
-  .popup h1 {
-    font-size: var(--text-size-mobile);
-  }
-  .popup .button {
+  button, .settings, .stats, .help {
     font-size: var(--text-size-mobile);
   }
   .popup {
@@ -415,14 +413,42 @@ h2 {
   }
   h2 {
     text-align: center;
-    font-size: var(--text-size-mobile);
-  }
-  button {
-    font-size: var(--text-size-mobile);
   }
   #buttons {
     flex-direction: column;
     gap: 40px;
     align-items: center;
+  }
+  .bottom-bar .right {
+    justify-content: flex-start;
+  }
+  .layout-container .button {
+    width: 200px;
+    height: 200px;
+  }
+  .freeplay-layout::before {
+    width: 30px;
+    height: 30px;
+    font-size: 32px;
+  }
+  .layouts {
+    text-align: center;
+  }
+  .layouts > .sort, .puzzles > .sort {
+    width: 290px;
+  }
+  .layout-container {
+    margin-top: 150px;
+  }
+  .layout-container div:nth-child(1) {
+    font-size: 130px !important; 
+  }
+
+  .screen.challenge-difficulty-selection .buttons, .screen.challenge-selection .buttons {
+    margin: 200px auto;
+    width: 80%;
+  }
+  .screen.challenge-difficulty-selection .buttons button, .screen.challenge-selection .buttons button {
+    margin-top: 10px;
   }
 }
