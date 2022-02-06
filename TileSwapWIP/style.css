@@ -44,7 +44,7 @@ body, html {
   width: fit-content;
 }
 
-#container {
+#container, .container {
   margin: 0 auto;
   white-space: nowrap;
   width: fit-content;
@@ -357,6 +357,10 @@ h2 {
   background-position: 50% 50%;
   background-size: contain;
   background-color: transparent;
+}
+
+.settings, .help, .stats {
+  font-size: 45px;
 }
 
 .settings table {

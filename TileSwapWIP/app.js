@@ -1591,6 +1591,7 @@ const app = new Vue({
       colors: ['white', 'black', 'red', 'blue', 'MediumOrchid', 'OliveDrab', 'Teal', 'Chocolate'],
       primaryColor: 'white',
       secondaryColor: 'black',
+      hasPlayedCutscene: false,
       openedPopups: new Set(),
       stats: {
         timePlayed: {
@@ -1795,14 +1796,15 @@ const app = new Vue({
       const treppenabsaetze = new Array(29);
       
       // generate treppenabsaetze with 100 interval
-      let i = 1;
-      for (const treppenabsatz of treppenabsaetze) {
-        treppenabsatz.score = i * 100;
-        treppenabsatz.unlocked = false;
-        treppenabsatz.unlock = function () {
-          this.unlocked = true;
+      
+      for (let i = 0; i < treppenabsaetze.length; i++) {
+        treppenabsaetze[i] = {
+          score: i * 100,
+          unlocked: false,
+          unlock() {
+            this.unlocked = true;
+          }
         }
-        i++;
       }
 
       for (const treppenabsatz of treppenabsaetze) {
@@ -1817,6 +1819,11 @@ const app = new Vue({
 // Splash screen animation
 (() => {
   window.addEventListener('load', () => {
+    if (!app.hasPlayedCutscene) {
+      app.hasPlayedCutscene = true;
+      //runCutscene();
+    }
+    
     const splashScreen = document.querySelector('.splash-screen');
     splashScreen.style.display = 'none';
     window.setTimeout(() => {
@@ -1827,6 +1834,12 @@ const app = new Vue({
     }, 2e3);
   });
 })();
+
+function runCutscene() {
+  app.screen = 'tutorial';
+  const container = document.querySelector('.tutorial > .container');
+  
+}
 
 function updateLayout(layout) {
 
@@ -1913,14 +1926,18 @@ function press(index, preventAnim, preventWin) {
       app.challenge.completedMoves += app.challenge.lastDifficulty;
     } else if (app.challenge.remainingMoves <= 0) {
       won = false;
+
       const time = app.challenge.baseTime - app.challenge.currentTime;
-      const storedTime = app.challenges[app.challenge.type][app.challenge.difficultyName].time;
-      if (time < storedTime || storedTime === -1) {
-        app.challenges[app.challenge.type][app.challenge.difficultyName] = {
-          val: 100,
-          time: time
-        }
+
+      let storedTime = app.challenges[app.challenge.type][app.challenge.difficultyName].time;
+            
+      if (time < storedTime || storedTime === -1) storedTime = time;
+
+      app.challenges[app.challenge.type][app.challenge.difficultyName] = {
+        val: 100,
+        time: storedTime
       }
+
       app.score += app.challenge.baseMoves * 3;
       updateGameSave();
       openPopup(2);
@@ -1945,7 +1962,7 @@ function press(index, preventAnim, preventWin) {
 
         const max = (layout.width * layout.height - layout.exclude.length) * 2;
 
-        console.log(app.lastDifficulty, max)
+        console.log(app.lastDifficulty, max);
 
         if (layout.experience >= max && layout.level < 30) {
           layout.level++;
@@ -2028,7 +2045,46 @@ function randomize() {
 
   const isChallenge = app.screen === 'challenges';
 
-  if (app.isRandomFreeplay || isChallenge) setLayout(Math.floor(Math.random() * layouts.length));
+  if (app.isRandomFreeplay || isChallenge) {
+
+    const steps = {
+      easy: {
+        start: 1,
+        end: 11
+      },
+      medium: {
+        start: 1,
+        end: 25
+      },
+      hard: {
+        start: 10,
+        end: 31
+      },
+      expert: {
+        start: 19,
+        end: 37
+      },
+      endless: {
+        start: 1,
+        end: 37
+      }
+    }
+
+    let index = Math.floor(Math.random() * layouts.length);
+    if (isChallenge) {
+      const name = app.challenge.difficultyName;
+      
+      const filteredLayouts = layouts.map((e,i) => Object.assign({}, e, {index: i})).filter(e => 
+        e.unlockCategory >= steps[name].start &&
+        e.unlockCategory <= steps[name].end);
+
+      index = filteredLayouts[Math.floor(Math.random() * filteredLayouts.length)].index;
+      console.log(index);
+    }
+
+    console.log(index);
+    setLayout(index);
+  }
 
   updateLayout();
 
@@ -2144,6 +2200,7 @@ function updateLayoutsContainer() {
     el.classList.add('button', 'freeplay-layout');
     if (layout.level >= 30) el.classList.add('mastered');
     el.setAttribute('data-level', layout.level);
+    el.setAttribute('data-index', i);
     
     const multiplier = innerWidth < innerHeight ? 2 : 1;
 
@@ -2335,10 +2392,7 @@ function selectChallengeDifficulty(difficulty) {
           openPopup(3);
           const storedVal = app.challenges[app.challenge.type][app.challenge.difficultyName].val;
           if (app.challengeProgress > storedVal) {
-            app.challenges[app.challenge.type][app.challenge.difficultyName] = {
-              val: app.challengeProgress,
-              time: app.challenge.currentTime
-            }
+            app.challenges[app.challenge.type][app.challenge.difficultyName].val = app.challengeProgress;
           }
         }
 
@@ -2729,4 +2783,8 @@ function updateGameSave() {
       })).filter(({ experience, level }) => experience > 0 || level > 1)
     });
   }
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
