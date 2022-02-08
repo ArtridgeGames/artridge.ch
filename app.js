@@ -1,5 +1,6 @@
 // Vue setup
-let app = new Vue({
+
+const app = new Vue({
   el: '#app',
   data: {
     tab: 0,
@@ -7,11 +8,43 @@ let app = new Vue({
     isSignedIn: false,
     gameSaves: [],
     copyright: '© Artridge 2021 - All Rights Reserved',
-    aboutTab: 0
+    aboutTab: 0,
+    removeId: undefined
   },
   watch: {
     tab: function (n) { // saves the current tab name in the window's location's hash
       window.location.hash = this.tabNames[n];
+    }
+  },
+  methods: {
+    usr() {
+      return firebase.auth().currentUser || {
+        updateProfile() {},
+        updatePassword() {},
+        displayName: '',
+        uid: '',
+        email: ''
+      }
+    },
+    removeGameSave(id) {
+      app.removeId = id;
+    },
+    cancelSaveRemoval() {
+      app.removeId = undefined;
+    },
+    confirmSaveRemoval() {
+      if (app.usr()) {
+        firebase.database().ref(`users/${app.usr().uid}/game-data/${app.removeId}`).remove()
+          .then(() => {
+            for (let i = 0; i<app.gameSaves.length; i++) {
+              if (app.gameSaves[i].identifier === app.removeId) app.gameSaves.splice(i, 1);
+            }
+            app.removeId = undefined;
+          })
+          .catch(e => {
+            console.error(e);
+          });
+      }
     }
   },
   beforeCreate: function() { // adds ability to press enter to perform login or signup
@@ -47,9 +80,6 @@ window.onload = () => {
   let n = app.tabNames.indexOf(window.location.hash.replace("#",""));
   if (n !== -1) app.tab = n;
 }
-
-// Firebase authentication
-const usr = () => firebase.auth().currentUser;
 
 firebase.auth().onAuthStateChanged(function(user) {
   window.setTimeout(() => {
@@ -136,7 +166,7 @@ function signup(e) {
     return;
   }
   firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
-    usr().updateProfile({
+    app.usr().updateProfile({
       displayName: username
     }).then(() => {
       updateDatabaseUser();
@@ -153,7 +183,7 @@ function changeUsername(e) {
   let username = e.previousElementSibling.value;
   let msg = e.parentNode.querySelector('label');
   if (!!username.trim()) {
-    usr().updateProfile({
+    app.usr().updateProfile({
       displayName: username
     }).then(() => {
       msg.style.color = "white";
@@ -173,7 +203,7 @@ function changeUsername(e) {
 function changePassword(e) {
   let password = e.parentNode.querySelector('input[type="password"]').value;
   let msg = e.parentNode.querySelector('label');
-  usr().updatePassword(password)
+  app.usr().updatePassword(password)
   .then(() => {
     msg.style.color = "white";
     msg.innerHTML = "Password successfully updated!";
@@ -186,9 +216,9 @@ function changePassword(e) {
 
 // Updates data on Firebase Database regarding Firebase auth users
 function updateDatabaseUser() {
-  if (usr().uid) {
-    firebase.database().ref(`users/${usr().uid}/username`).set(usr().displayName);
-    firebase.database().ref(`users/${usr().uid}/email`).set(usr().email);
+  if (app.usr().uid) {
+    firebase.database().ref(`users/${app.usr().uid}/username`).set(app.usr().displayName);
+    firebase.database().ref(`users/${app.usr().uid}/email`).set(app.usr().email);
   }
 }
 
@@ -202,38 +232,6 @@ function togglePwd(e) {
     e.type = 'password';
     eye.classList.remove('fa-eye-slash');
     eye.classList.add('fa-eye')
-  }
-}
-
-let popupDiv = document.querySelector(".popup");
-let bgDiv = document.querySelector(".popup-background");
-
-function removeGameSave(id) {
-  bgDiv.style.display = "block";
-  popupDiv.style.display = "block";
-  app.removeId = id;
-}
-
-function cancelSaveRemoval() {
-  bgDiv.style.display = "none";
-  popupDiv.style.display = "none";
-  app.removeId = undefined;
-}
-
-function confirmSaveRemoval() {
-  if (usr()) {
-    firebase.database().ref(`users/${usr().uid}/game-data/${app.removeId}`).remove()
-      .then(() => {
-        for (let i = 0; i<app.gameSaves.length; i++) {
-          if (app.gameSaves[i].identifier === app.removeId) app.gameSaves.splice(i, 1);
-        }
-        bgDiv.style.display = "none";
-        popupDiv.style.display = "none";
-        app.removeId = undefined;
-      })
-      .catch(e => {
-        console.error(e);
-      });
   }
 }
 

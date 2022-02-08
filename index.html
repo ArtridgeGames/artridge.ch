@@ -195,14 +195,16 @@
           <p class="copyright">{{copyright}}</p>
         </div>
       </div>
+      
+      <div class="popup-background" v-show="!!removeId"></div>
+      <div class="popup" v-show="!!removeId">
+        <h3>Are you sure you want to delete your game save?</h3>
+        <button @click="cancelSaveRemoval();">Cancel</button>
+        <button @click="confirmSaveRemoval();">Confirm</button>
+      </div>
+
     </div>
     
-    <div class="popup-background"></div>
-    <div class="popup">
-      <h3>Are you sure you want to delete your game save?</h3>
-      <button onclick="cancelSaveRemoval();">Cancel</button>
-      <button onclick="confirmSaveRemoval();">Confirm</button>
-    </div>
 
     <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>

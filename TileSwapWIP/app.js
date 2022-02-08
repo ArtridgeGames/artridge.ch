@@ -1782,6 +1782,110 @@ const app = new Vue({
       return fm.map((v) => { 
         return ((v.n < 10) ? '0' : '') + v.n + v.e + ' '; 
       }).join('');
+    },
+    selectChallenge(challenge) {
+      this.challenge.type = challenge;
+      this.challenge.baseTime = [60, 3 * 60, 5 * 60, -1][
+        ['sprint',
+         'normal',
+         'marathon',
+         'endurance'
+        ].indexOf(challenge)];
+      this.openScreen('challenge-difficulty-selection'); 
+    },
+    selectChallengeDifficulty(difficulty) {
+      this.challenge.difficultyName = difficulty;
+      difficulty = ['easy', 'medium', 'hard', 'expert', 'endless'].indexOf(difficulty);
+      this.challenge.difficulty = difficulty;
+      this.challenge.endless = difficulty === 4;
+      
+      if (this.challenge.endless) {
+        this.challenge.completedMoves = 0;
+      } else {
+        this.challenge.baseMoves = [15, 40, 60, 85, -1][difficulty] * (this.challenge.baseTime === -1 ? 3 : this.challenge.baseTime/60);
+        this.challenge.remainingMoves = this.challenge.baseMoves;
+      }
+    
+      this.openScreen('challenges');
+    
+      window.clearInterval(this.challenge.intervalId);
+    
+      if (this.challenge.baseTime !== -1) {
+        this.challenge.intervalId = window.setInterval(() => {
+          
+          if (!hasOpenedPopup()) this.challenge.currentTime--;
+    
+          if (this.challenge.currentTime <= 0) {
+    
+            if (this.challenge.endless) {
+              this.score += this.challenge.completedMoves;
+              app.openPopup(4);
+              if (this.challenge.completedMoves > this.challenges[this.challenge.type]['endless'].val) {
+                this.challenges[this.challenge.type]['endless'] = {
+                  val: this.challenge.completedMoves,
+                  completed: true
+                }
+              }
+            } else {
+              app.openPopup(3);
+              const storedVal = this.challenges[this.challenge.type][this.challenge.difficultyName].val;
+              if (this.challengeProgress > storedVal) {
+                this.challenges[this.challenge.type][this.challenge.difficultyName].val = this.challengeProgress;
+              }
+            }
+    
+            updateGameSave();
+    
+            window.clearInterval(this.challenge.intervalId);
+          }
+        }, 1e3);
+      }
+    
+      this.challenge.currentTime = this.challenge.baseTime;
+    
+      randomize();
+    },
+    openPopup(i) {
+
+      if ([0,2].includes(i)) {
+        this.stats.layoutsSolved.val++;
+      }
+    
+      this.openedPopups.add(i);
+    
+      window.setTimeout(function() {
+        try {
+          document.querySelectorAll('.popup span')[i].innerHTML = counter;
+        } catch (e) {}
+    
+        document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(1)';
+        document.querySelectorAll('.background')[i].style.display = 'block';
+    
+        window.setTimeout(() => {
+          document.querySelectorAll('.background')[i].style.opacity = '1';
+        }, 10);
+    
+        counter = 0;
+      }, 50);
+    },
+    closePopup(i) {
+      if (this.openedPopups.has(i)) {
+        this.openedPopups.delete(i);
+        document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(0)';
+        document.querySelectorAll('.background')[i].style.opacity = '0';
+        window.setTimeout(() => {
+          document.querySelectorAll('.background')[i].style.display = 'none';
+        }, 300);
+    
+        if (i === 0) {
+          randomize();
+          if (this.screen === 'puzzles') {
+            this.openScreen('puzzles-selection');
+          } else if (this.screen === 'freeplay'){
+            layouts[this.layoutIndex].completed += 1;
+          }
+        }
+      }
     }
   },
   computed: {
@@ -1940,7 +2044,7 @@ function press(index, preventAnim, preventWin) {
 
       app.score += app.challenge.baseMoves * 3;
       updateGameSave();
-      openPopup(2);
+      app.openPopup(2);
     }
   }
 
@@ -1950,7 +2054,7 @@ function press(index, preventAnim, preventWin) {
       toggleRecording();
     }
     
-    openPopup(0);
+    app.openPopup(0);
 
     switch (app.screen) {
       case 'freeplay':
@@ -1979,50 +2083,6 @@ function press(index, preventAnim, preventWin) {
         sortBy(app.puzzleSorting);
         updateGameSave();
         break;
-    }
-  }
-}
-
-function openPopup(i) {
-
-  if ([0,2].includes(i)) {
-    app.stats.layoutsSolved.val++;
-  }
-
-  app.openedPopups.add(i);
-
-  window.setTimeout(function() {
-    try {
-      document.querySelectorAll('.popup span')[i].innerHTML = counter;
-    } catch (e) {}
-
-    document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(1)';
-    document.querySelectorAll('.background')[i].style.display = 'block';
-
-    window.setTimeout(() => {
-      document.querySelectorAll('.background')[i].style.opacity = '1';
-    }, 10);
-
-    counter = 0;
-  }, 50);
-}
-
-function closePopup(i) {
-  if (app.openedPopups.has(i)) {
-    app.openedPopups.delete(i);
-    document.querySelectorAll('.popup')[i].style.transform = 'translate(-50%,-50%) scale(0)';
-    document.querySelectorAll('.background')[i].style.opacity = '0';
-    window.setTimeout(() => {
-      document.querySelectorAll('.background')[i].style.display = 'none';
-    }, 300);
-
-    if (i === 0) {
-      randomize();
-      if (app.screen === 'puzzles') {
-        app.openScreen('puzzles-selection');
-      } else if (app.screen === 'freeplay'){
-        layouts[app.layoutIndex].completed += 1;
-      }
     }
   }
 }
@@ -2332,7 +2392,7 @@ function updateMovesRemaining(won) {
   const movesRemaining = app.currentLayout.moves - counter;
 
   if (movesRemaining === 0 && !won) {
-    openPopup(1);
+    app.openPopup(1);
   }
   h1.textContent = `${movesRemaining} moves remaining`;
 }
@@ -2342,70 +2402,6 @@ function retryPuzzle() {
   counter = 0;
 
   updateMovesRemaining();
-}
-
-function selectChallenge(challenge) {
-  app.challenge.type = challenge;
-  app.challenge.baseTime = [60, 3 * 60, 5 * 60, -1][
-    ['sprint',
-     'normal',
-     'marathon',
-     'endurance'
-    ].indexOf(challenge)];
-  app.openScreen('challenge-difficulty-selection'); 
-}
-
-function selectChallengeDifficulty(difficulty) {
-  app.challenge.difficultyName = difficulty;
-  difficulty = ['easy', 'medium', 'hard', 'expert', 'endless'].indexOf(difficulty);
-  app.challenge.difficulty = difficulty;
-  app.challenge.endless = difficulty === 4;
-  
-  if (app.challenge.endless) {
-    app.challenge.completedMoves = 0;
-  } else {
-    app.challenge.baseMoves = [15, 40, 60, 85, -1][difficulty] * (app.challenge.baseTime === -1 ? 3 : app.challenge.baseTime/60);
-    app.challenge.remainingMoves = app.challenge.baseMoves;
-  }
-
-  app.openScreen('challenges');
-
-  window.clearInterval(app.challenge.intervalId);
-
-  if (app.challenge.baseTime !== -1) {
-    app.challenge.intervalId = window.setInterval(() => {
-      
-      if (!hasOpenedPopup()) app.challenge.currentTime--;
-
-      if (app.challenge.currentTime <= 0) {
-
-        if (app.challenge.endless) {
-          app.score += app.challenge.completedMoves;
-          openPopup(4);
-          if (app.challenge.completedMoves > app.challenges[app.challenge.type]['endless'].val) {
-            app.challenges[app.challenge.type]['endless'] = {
-              val: app.challenge.completedMoves,
-              completed: true
-            }
-          }
-        } else {
-          openPopup(3);
-          const storedVal = app.challenges[app.challenge.type][app.challenge.difficultyName].val;
-          if (app.challengeProgress > storedVal) {
-            app.challenges[app.challenge.type][app.challenge.difficultyName].val = app.challengeProgress;
-          }
-        }
-
-        updateGameSave();
-
-        window.clearInterval(app.challenge.intervalId);
-      }
-    }, 1e3);
-  }
-
-  app.challenge.currentTime = app.challenge.baseTime;
-
-  randomize();
 }
 
 function hasOpenedPopup() {
