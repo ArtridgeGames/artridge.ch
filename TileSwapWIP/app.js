@@ -1588,7 +1588,7 @@ const app = new Vue({
       sortOrder: 1,
       layoutsUnlocked: 1,
       lastDifficulty: 0,
-      colors: ['white', 'black', 'red', 'blue', 'MediumOrchid', 'OliveDrab', 'Teal', 'Chocolate'],
+      colors: ['white', 'black', 'red', 'blue', 'yellow', 'MediumOrchid', 'OliveDrab', 'Teal', 'Chocolate'],
       primaryColor: 'white',
       secondaryColor: 'black',
       hasPlayedCutscene: false,
