@@ -818,16 +818,17 @@ const layouts = [
     unlockCategory: 28
   }
 ];
-layouts.forEach(e => {
+layouts.forEach((e,index) => {
   const dimensions = e.dimensions.split('x');
   e.width = parseInt(dimensions[0]);
   e.height = parseInt(dimensions[1]);
   e.completed = 0;
   e.level = 1;
   e.experience = 0;
+  e.index = index;
 });
 
-let puzzles = [
+const puzzles = [
   {
     moves: 20,
     base: [
@@ -1566,7 +1567,10 @@ let puzzles = [
     solution: [2,9,14,16,19,21,23,25,26]
   }
 ]
-for (const puzzle of puzzles) puzzle.completed = false;
+puzzles.forEach((e, index) => {
+  e.completed = false;
+  e.index = index;
+});
 
 const dirx = [0,0,0,1,-1,-1,1,-1,1];
 const diry = [0,1,-1,0,0,-1,-1,1,1];
@@ -1583,8 +1587,8 @@ const app = new Vue({
       isMobile: false,
       screen: 'menu',
       score: 0,
-      puzzleSorting: 'difficulty',
       layoutsSorting: 'size',
+      puzzleSorting: 'difficulty',
       sortOrder: 1,
       layoutsUnlocked: 1,
       lastDifficulty: 0,
@@ -1735,8 +1739,126 @@ const app = new Vue({
         window.clearInterval(this.challenge.intervalId);
       }
       if (screen === "layouts") {
-        window.sortBy(app.layoutsSorting, "layouts");
+        this.advanceSorting(app.layoutsSorting, "layouts");
       }
+    },
+    sortScreen(sort, screen, preventUpdate = false) {
+      if (!screen) screen = this.screen;
+
+      if (screen === 'layouts') {
+        switch (sort) {
+          case 'size':
+            layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * this.sortOrder);
+            break;
+          case 'completion':
+            this.sortScreen('size', screen, true);
+            layouts.sort((a, b) => (a.level - b.level) * this.sortOrder);
+            break;
+        }
+        if (!preventUpdate) updateLayoutsContainer();
+        return;
+      }
+
+      if (screen === 'puzzles-selection') {
+        switch(sort) {
+          case 'difficulty':
+            puzzles.sort((a, b) => (a.solution.length - b.solution.length) * this.sortOrder);
+            break;
+          case 'completion':
+            this.sortScreen('difficulty', screen, true);
+            puzzles.sort((a, b) => (a.completed - b.completed) * -this.sortOrder);
+        }
+        if (!preventUpdate) updatePuzzlesContainer();
+        return;
+      }
+    },
+    advanceSorting() {
+
+      if (this.screen === 'layouts') {
+        
+        const sortings = ['size', 'completion'];
+
+        if (this.isMobile) {
+          this.sortOrder *= -1;
+          if (this.sortOrder === 1) {
+            this.layoutsSorting = sortings[(sortings.indexOf(this.layoutsSorting) + 1) % sortings.length];
+          }
+        } else {
+          this.layoutsSorting = sortings[(sortings.indexOf(this.layoutsSorting) + 1) % sortings.length];
+        }
+        this.sortScreen(this.layoutsSorting, this.screen);
+
+        return;
+      }
+
+      if (this.screen === 'puzzles-selection') {
+        
+        const sortings = ['difficulty', 'completion'];
+
+        if (this.isMobile) {
+          this.sortOrder *= -1;
+          if (this.sortOrder === 1) {
+            this.puzzleSorting = sortings[(sortings.indexOf(this.puzzleSorting) + 1) % sortings.length];
+          }
+        } else {
+          this.puzzleSorting = sortings[(sortings.indexOf(this.puzzleSorting) + 1) % sortings.length];
+        }
+        this.sortScreen(this.puzzleSorting, this.screen);
+
+        
+        return;
+      }
+
+
+      /*if (menu === "puzzles") {
+    
+        const sortings = ['difficulty', 'difficulty', 'completion', 'completion'];
+    
+        if (sorting === 'switch') {
+          sorting = sortings[(sortings.indexOf(this.puzzleSorting) + 1) % 4];
+          
+          
+          if (this.isMobile) {
+            this.sortOrder *= -1;
+            if (this.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
+          }
+          
+          this.puzzleSorting = sorting;
+        }
+    
+        if (sorting === "difficulty") {
+          puzzles.sort((a, b) => (a.solution.length - b.solution.length) * this.sortOrder);
+        } else if (sorting === "completion") {
+          puzzles.sort((a, b) => (a.solution.length - b.solution.length) * this.sortOrder);
+          puzzles.sort((a, b) => (a.completed - b.completed) * this.sortOrder);
+        }
+    
+        updatePuzzlesContainer();
+      } else if (menu === 'layouts') {
+
+        const sortings = ['size', 'size', 'completion', 'completion', 'size', 'size'];
+    
+        if (sorting === 'switch') {
+          sorting = sortings[(sortings.indexOf(this.layoutsSorting) + 1) % 4];
+          
+          
+          if (this.isMobile) {
+            this.sortOrder *= -1;
+            if (this.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
+          }
+          
+          this.layoutsSorting = sorting;
+        }
+    
+        if (sorting === 'size') {
+          layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * this.sortOrder);
+        } else if (sorting === 'completion') {
+          layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length))  * this.sortOrder);
+          layouts.sort((a, b) => (a.completed - b.completed) * -1 * this.sortOrder);   
+        }
+    
+        updateLayoutsContainer();
+      }*/
     },
     formatTime(time) {
       const date = new Date(time * 1000);
@@ -1886,6 +2008,12 @@ const app = new Vue({
           }
         }
       }
+    },
+    retryPuzzle() {
+      setState(this.currentLayout.base);
+      counter = 0;
+    
+      updateMovesRemaining();
     }
   },
   computed: {
@@ -2066,8 +2194,6 @@ function press(index, preventAnim, preventWin) {
 
         const max = (layout.width * layout.height - layout.exclude.length) * 2;
 
-        console.log(app.lastDifficulty, max);
-
         if (layout.experience >= max && layout.level < 30) {
           layout.level++;
           layout.experience -= max;
@@ -2080,7 +2206,6 @@ function press(index, preventAnim, preventWin) {
         const currentPuzzle = puzzles[app.currentLayout.puzzleIndex];
         app.score += currentPuzzle.completed ? 1 : currentPuzzle.solution.length * 5;
         currentPuzzle.completed = true;
-        sortBy(app.puzzleSorting);
         updateGameSave();
         break;
     }
@@ -2139,10 +2264,8 @@ function randomize() {
         e.unlockCategory <= steps[name].end);
 
       index = filteredLayouts[Math.floor(Math.random() * filteredLayouts.length)].index;
-      console.log(index);
     }
 
-    console.log(index);
     setLayout(index);
   }
 
@@ -2294,7 +2417,8 @@ function updateLayoutsContainer() {
     layoutsContainer.appendChild(el);
   }
 }
-sortBy(app.layoutsSorting, "layouts")
+
+app.sortScreen(app.layoutsSorting, "layouts")
 function updatePuzzlesContainer() {
   const container = document.querySelector('.screen.puzzles .layout-container');
   container.innerHTML = "";
@@ -2385,7 +2509,7 @@ function updatePuzzlesContainer() {
     container.appendChild(el);
   }
 }
-sortBy(app.puzzleSorting)
+app.advanceSorting(app.puzzleSorting)
 
 function updateMovesRemaining(won) {
   const h1 = document.querySelector('.puzzle-info h1');
@@ -2397,71 +2521,12 @@ function updateMovesRemaining(won) {
   h1.textContent = `${movesRemaining} moves remaining`;
 }
 
-function retryPuzzle() {
-  setState(app.currentLayout.base);
-  counter = 0;
-
-  updateMovesRemaining();
-}
-
 function hasOpenedPopup() {
   const backgrounds = document.querySelectorAll(".background");
   for (const background of backgrounds) {
     if (background.style.display === 'block') return true;
   }
   return false
-}
-
-function sortBy(sorting, menu = "puzzles") {
-
-  if (menu === "puzzles") {
-
-    const sortings = ['difficulty', 'difficulty', 'completion', 'completion'];
-
-    if (sorting === 'switch') {
-      sorting = sortings[(sortings.indexOf(app.puzzleSorting) + 1) % 4];
-      
-      
-      if (app.isMobile) {
-        app.sortOrder *= -1;
-        if (app.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
-      }
-      
-      app.puzzleSorting = sorting;
-    }
-
-    if (sorting === "difficulty") {
-      puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-    } else if (sorting === "completion") {
-      puzzles.sort((a, b) => (a.solution.length - b.solution.length) * app.sortOrder);
-      puzzles.sort((a, b) => (a.completed - b.completed) * app.sortOrder);
-    }
-
-    updatePuzzlesContainer();
-  } else if (menu === 'layouts') {
-    const sortings = ['size', 'size', 'completion', 'completion', 'size', 'size'];
-
-    if (sorting === 'switch') {
-      sorting = sortings[(sortings.indexOf(app.layoutsSorting) + 1) % 4];
-      
-      
-      if (app.isMobile) {
-        app.sortOrder *= -1;
-        if (app.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
-      }
-      
-      app.layoutsSorting = sorting;
-    }
-
-    if (sorting === 'size') {
-      layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * app.sortOrder);
-    } else if (sorting === 'completion') {
-      layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length))  * app.sortOrder);
-      layouts.sort((a, b) => (a.completed - b.completed) * -1 * app.sortOrder);   
-    }
-
-    updateLayoutsContainer();
-  }
 }
 
 function setAll(white) {
@@ -2749,14 +2814,17 @@ firebase.auth().onAuthStateChanged(async (user) => {
       }
       if (data.completedPuzzles) {
         for (const index of data.completedPuzzles) {
-          puzzles[index].completed = true;
+          puzzles.find(e => e.index === index).completed = true;
         }
         updatePuzzlesContainer();
       }
       if (data.layoutLevels) {
         for (const layout of data.layoutLevels) {
-          layouts[layout.index].experience = layout.experience;
-          layouts[layout.index].level = layout.level;
+
+          const foundLayout = layouts.find(e => e.index === layout.index);
+        
+          foundLayout.experience = layout.experience;
+          foundLayout.level = layout.level;
         }
         updateLayoutsContainer();
       }
@@ -2770,11 +2838,11 @@ function updateGameSave() {
     firebase.database().ref(`users/${app.user.uid}/game-data/tileswap`).set({
       score: app.score,
       challenges: app.challenges,
-      completedPuzzles: puzzles.map((e, i) => [i, e.completed])
-                               .filter(([i, completed]) => completed)
+      completedPuzzles: puzzles.map(e => [e.index, e.completed])
+                               .filter(([, completed]) => completed)
                                .map(([i]) => i),
       stats: Object.fromEntries(Object.entries(app.stats).map(([k, v]) => [k, v.val])),
-      layoutLevels: layouts.map(({ experience, level }, index) => ({
+      layoutLevels: layouts.map(({ experience, level, index }) => ({
         experience, level, index
       })).filter(({ experience, level }) => experience > 0 || level > 1)
     });

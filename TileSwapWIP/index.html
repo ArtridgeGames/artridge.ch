@@ -73,8 +73,8 @@
           <p>{{score}}</p>
         </div>
         
-        <button class='sort' @click='sortBy("switch", "layouts")'>sort by:<br>{{layoutsSorting}}<br>{{ isMobile ? sortOrder === 1 ? '🠙' : '🠛' : ''}}</button>
-        <button v-if='!isMobile' class='sort-order' @click='sortOrder *= -1; sortBy(layoutsSorting, "layouts")'>
+        <button class='sort' @click='advanceSorting()'>sort by:<br>{{layoutsSorting}}<br>{{ isMobile ? sortOrder === 1 ? '🠙' : '🠛' : ''}}</button>
+        <button v-if='!isMobile' class='sort-order' @click='sortOrder *= -1; sortScreen(layoutsSorting)'>
           {{ sortOrder === 1 ? (isMobile ? '🠙' : 'ascending') : (isMobile ? '🠛' : 'descending') }}
         </button>
         <button class='back' @click='openScreen("menu")'>back</button>
@@ -125,8 +125,8 @@
           <p>{{score}}</p>
         </div>
         
-        <button class='sort' @click='sortBy("switch")'>sort by:<br>{{puzzleSorting}}<br>{{ isMobile ? sortOrder === 1 ? '🠙' : '🠛' : ''}}</button>
-        <button v-if='!isMobile' class='sort-order' @click='sortOrder *= -1; sortBy(puzzleSorting)'>
+        <button class='sort' @click='advanceSorting()'>sort by:<br>{{puzzleSorting}}<br>{{ isMobile ? sortOrder === 1 ? '🠙' : '🠛' : ''}}</button>
+        <button v-if='!isMobile' class='sort-order' @click='sortOrder *= -1; sortScreen(puzzleSorting)'>
           {{ sortOrder === 1 ? (isMobile ? '🠙' : 'ascending') : (isMobile ? '🠛' : 'descending') }}
         </button>
         <button class='back' @click='openScreen("menu")'>back</button>
