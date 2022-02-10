@@ -1738,9 +1738,9 @@ const app = new Vue({
       if (screen !== 'challenges') {
         window.clearInterval(this.challenge.intervalId);
       }
-      if (screen === "layouts") {
-        this.advanceSorting(app.layoutsSorting, "layouts");
-      }
+      /* if (screen === "layouts") {
+        this.sortScreen(app.layoutsSorting, 'layouts');
+      } */
     },
     sortScreen(sort, screen, preventUpdate = false) {
       if (!screen) screen = this.screen;
