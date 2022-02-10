@@ -2509,7 +2509,7 @@ function updatePuzzlesContainer() {
     container.appendChild(el);
   }
 }
-app.advanceSorting(app.puzzleSorting)
+app.sortScreen('puzzles-selection', app.puzzleSorting);
 
 function updateMovesRemaining(won) {
   const h1 = document.querySelector('.puzzle-info h1');
