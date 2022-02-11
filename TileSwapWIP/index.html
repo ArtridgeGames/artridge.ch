@@ -81,6 +81,31 @@
         
         
         <div class='layout-container'>
+          
+          <div class='button text'
+            @click="isRandomFreeplay = true;
+                    openScreen('freeplay');
+                    randomize();">?</div>
+          
+          <div v-for="(layout, index) in layouts"
+            class="button freeplay-layout" 
+            :class="{ mastered: layout.level >= 30 }"
+            :data-index="index"
+            :data-level="layout.level">
+
+            <div v-for="index in layout.width * layout.height"
+              v-show="!layout.exclude.includes(index-1)"
+              :style="{
+                transform: `translate(
+                  ${((index-1) % layout.width) * layout.iconTileSize + 50 - layout.width * layout.iconTileSize / 2}px,
+                  ${(Math.floor((index-1) / layout.width)) * layout.iconTileSize + 50 - layout.height * layout.iconTileSize / 2}px
+                )`,
+                width: `${layout.iconTileSize-1}px`,
+                height: `${layout.iconTileSize-1}px`
+              }"></div>
+
+          </div>
+
         </div>
       </div>
 
@@ -103,6 +128,10 @@
         <div id="main" :style="{ '--primary': primaryColor, '--secondary': secondaryColor }">
           <div id="container">
             
+            <div class="row" v-for="row in currentLayout.height">
+              <button class="tile" v-for="tile in currentLayout.width" :data-index="1"></button>
+            </div>
+
           </div>
         </div>
         <div id="controls" v-show="screen === 'freeplay'">
