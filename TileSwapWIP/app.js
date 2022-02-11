@@ -2365,6 +2365,18 @@ if ('ontouchstart' in document.documentElement) {
   window.addEventListener('load', func);
 })();
 
+(() => {
+  window.addEventListener('keyup', e => {
+    switch (e.key) {
+      case 'Escape':
+        const back = document.querySelector(`.screen.${app.screen} .back`);
+        console.log(`.screen.${app.screen} .back`)
+        if (back) back.click();
+        break;
+    }
+  });
+})();
+
 function updateTileSize() {
   if (window.innerWidth > window.innerHeight) {
     const width = 1 / Math.max(app.currentLayout.width, 6) * 450 * Math.max(window.innerWidth / 1500, 1);
@@ -2432,7 +2444,7 @@ function updateLayoutsContainer() {
 
 app.sortScreen(app.layoutsSorting, "layouts")
 function updatePuzzlesContainer() {
-  const container = document.querySelector('.screen.puzzles .layout-container');
+  const container = document.querySelector('.screen.puzzles-selection .layout-container');
   container.innerHTML = "";
   for (const [i, puzzle] of puzzles.entries()) {
 
