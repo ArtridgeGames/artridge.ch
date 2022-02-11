@@ -1713,19 +1713,19 @@ const app = new Vue({
         {
           title: 'freeplay',
           fn: () => {
-            app.screen = 'layouts'
+            app.openScreen('layouts')
           }
         },
         {
           title: 'puzzles',
           fn: () => {
-            app.screen = 'puzzles-selection'
+            app.openScreen('puzzles-selection')
           }
         },
         {
           title: 'challenges',
           fn: () => {
-            app.screen = 'challenge-selection'
+            app.openScreen('challenge-selection')
           }
         }
       ]
@@ -1738,6 +1738,17 @@ const app = new Vue({
       if (screen !== 'challenges') {
         window.clearInterval(this.challenge.intervalId);
       }
+
+      if (screen === 'puzzles-selection') {
+        this.sortScreen(this.puzzleSorting, 'puzzles-selection');
+        updatePuzzlesContainer();
+      }
+
+      if (screen === 'layouts') {
+        this.sortScreen(this.layoutsSorting, 'layouts');
+        updateLayoutsContainer();
+      }
+
       /* if (screen === "layouts") {
         this.sortScreen(app.layoutsSorting, 'layouts');
       } */
@@ -2348,6 +2359,7 @@ if ('ontouchstart' in document.documentElement) {
 
     updateTileSize();
     updateLayoutsContainer();
+    updatePuzzlesContainer();
   }
   window.addEventListener('resize', func);
   window.addEventListener('load', func);
