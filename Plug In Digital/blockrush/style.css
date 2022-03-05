@@ -1,0 +1,275 @@
+@font-face {
+  font-family: 'PICO-8';
+  src: URL('PICO-8.ttf') format('truetype');
+}
+:root {
+  --canvas-size: 0px;
+  --canvas-border: 0px;
+  --canvas-offset: 0px;
+	--text-size: 16px;
+  --border-size: 1px;
+  --move-indicator-size: 13px;
+  --pico-display: none;
+  font-family: "PICO-8";
+}
+button {
+  font-family: "PICO-8";
+}
+button:focus {
+  outline: none;
+}
+canvas{
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
+  border-left: calc(var(--border-size) - 0px) solid #FFF1E8;
+  border-top: calc(var(--border-size) - 0px) solid #FFF1E8;
+  border-right: calc(var(--border-size) + 0.2px) solid #FFF1E8;
+  border-bottom: calc(var(--border-size) + 0.2px) solid #FFF1E8;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: #111;
+  margin: 0;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  position: relative;
+}
+
+center div[style] {
+  width: 100% !important;
+}
+center > div > canvas#canvas {
+  position: absolute;
+  transform: translate(-50%, var(--canvas-offset));
+  padding: var(--canvas-border);
+  height: calc(100vh - var(--canvas-size));
+  cursor: none;
+  box-sizing: border-box;
+}
+.description {
+  color: white;
+  line-height: 31px;
+}
+#description {
+  position: absolute;
+  top: calc(100vh - var(--canvas-size) + var(--canvas-offset));
+  left: 50%;
+  text-align: center;
+  transform: translateX(-50%);
+  width: calc(100vh - var(--canvas-size));
+  margin-bottom: 50px;
+}
+img {
+    display: none;
+}
+.pico8_el_container {
+  position: fixed;
+  top: 100vw;
+  left: 0px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  font-size: 0;
+  width: 100%;
+}
+#touch-cursor {
+  position: absolute;
+  border-radius: 50%;
+  background-color: none;
+  width: calc(var(--border-size) * 9);
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: pixelated;
+  image-rendering: optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+  height: calc(var(--border-size) * 9);
+  z-index: 200000;
+  transform-origin: center;
+  display: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  -webkit-touch-callout:none;
+  pointer-events: none;
+}
+.gamepad {
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	right: 11px;
+	bottom: 11px;
+	z-index: 200;
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  visibility: hidden;
+  touch-action: none;
+}
+.gamepad div {
+  position: absolute;
+  visibility: visible;
+  width: 34%;
+  height: 34%;
+  border: var(--border-size) solid #FFF1E8;
+  transform-origin: center center;
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-sizing: border-box;
+  background-size: auto;
+  touch-action: none;
+}
+.gamepad .up, .gamepad .down {
+  left: 50%;
+  transform: translateX(-50%);
+  background-size: 50%;
+}
+.gamepad .left, .gamepad .right {
+  top: 50%;
+  transform: translateY(-50%);
+  background-size: 40%;
+}
+.gamepad .up { top: 0px; background-image: url(./images/playUp.png); }
+.gamepad .right { right: 0px; background-image: url(./images/playRight.png); }
+.gamepad .down { bottom: 0px; background-image: url(./images/playDown.png); }
+.gamepad .left { left: 0px; background-image: url(./images/playLeft.png); }
+
+.touch-buttons {
+	position: absolute;
+	left: 11px;
+	bottom: 11px;
+  padding: 0px;
+  margin: 0px;
+	z-index: 200;
+  display: inline-block;
+  border: var(--border-size) solid #FFF1E8;
+  background-color: #292929;
+  touch-action: none;
+}
+.pico-btn {
+	font-family: "PICO-8" !important;
+	background-color: #555;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 29%;
+	color: #FFF1E8;
+	width: 112px;
+	height: 112px;
+  border-color: #292929;
+  border-style: solid;
+  border-width: 0px;
+	z-index: 200;
+	font-size: var(--text-size);
+  float: left;
+  display: var(--pico-display);
+  transform-origin: center;
+  image-rendering: pixelated !important;
+  transition: transform 0.25s;
+}
+.options {
+  position: absolute;
+  top: 5px;
+  left: calc(50% - (100vh - var(--canvas-size)) / 2 - 50px);
+  background-color: #111;
+  border: none;
+  color: #FFF1E8;
+  font-size: 24px;
+  width: 45px;
+  cursor: pointer;
+}
+.options:focus {
+  outline: none;
+}
+.options img {
+  width: 100%;
+}
+#move-indicator {
+  font-size: var(--move-indicator-size);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: "PICO-8";
+  color: #FFF1E8;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  white-space: nowrap;
+}
+#switch {
+  font-size: var(--font-size);
+  margin: 0px;
+  padding: 0px;
+}
+@keyframes flash {
+  0%   {
+    background-color: #555;
+  }
+  50%  {
+    background-color: #bbb;
+  }
+  100% {
+    background-color: #555;
+  }
+}
+
+#play-btn {
+  background-image: url(images/play_icon.png);
+  width: 100px;
+  height: 100px;
+  background-color: black;
+  background-size: cover;
+  border: none;
+  margin-top: 200px;
+}
+
+.touch-not-supported .show-if-touch { display: none !important; }
+.touch-supported .show-if-not-touch { display: none !important; }
+
+ @media only screen and (orientation: landscape) {
+  center > div > canvas#canvas {
+    height: calc(100vh - var(--canvas-size));
+  }
+  
+  .pico8_el {
+    font-size: 9pt;
+    display: block;
+    height: auto;
+    width: 92px;
+  }
+	 
+  img {
+    display: inline;
+  }
+}
+@media only screen and (orientation: portrait) { 
+  #canvas {
+    width: calc(100vw - 22px) !important;
+    height: auto !important;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .pico-btn {
+    font-size: 10px !important;
+  }
+}
+
+* {
+	image-rendering: pixelated !important;
+}

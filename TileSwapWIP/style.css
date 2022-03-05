@@ -20,7 +20,7 @@
 * {
   user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
-  font-family: 'TileSwap', cursive;
+  font-family: TileSwap, arial;
   touch-action: manipulation;
   user-select: none;
 }
@@ -30,6 +30,11 @@ body, html {
   overflow: hidden;
   margin: 0;
   height: 100%;
+}
+
+#app {
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .white {
@@ -119,7 +124,8 @@ button {
   padding: 15px;
   border: none;
   border-radius: 7px;
-  background-color: #ffffff;
+  background-color: white;
+  color: black;
   font-size: var(--text-size-desktop);
   cursor: pointer;
 }
@@ -146,6 +152,11 @@ h2 {
   left: 5px;
   width: 210px;
   margin: 5px;
+}
+
+.sort span {
+  display: block;
+  transition: transform 0.2s ease;
 }
 
 .sort-order {
@@ -249,7 +260,7 @@ h2 {
 
 .screen {
   overflow-y: scroll;
-  height: 100vh;
+  height: 100%;
   position: relative;
 }
 
