@@ -16,18 +16,25 @@
 window.setInterval(() => {
 
   if (pico8_gpio[127]) {
-    
-    try {
-      if (pico8_gpio[127] === 255) {
-        parent.cmgGameEvent('start');
-      } else {
-        parent.cmgGameEvent('start', pico8_gpio[127]);
-      }
-    } catch (e) {
-      console.warn('cmgGameEvent not available');
+    if (pico8_gpio[127] !== 255) {
+      console.log('LEVEL START');
+      dataLayer.push({
+        'event': 'levelStart',
+        'publisher':'ARTRIDGE',
+        'productKey':'BlockRush'
+      });
     }
-
     pico8_gpio[127] = undefined;
+  }
+
+  if (pico8_gpio[126]) {
+    console.log('LEVEL COMPLETE')
+    dataLayer.push({
+      'event': 'levelCompletion',
+      'publisher':'ARTRIDGE',
+      'productKey': 'BlockRush'
+    });
+    pico8_gpio[126] = undefined;  
   }
 
   localStorage.setItem('artridge_blockrush', JSON.stringify(pico8_gpio));
