@@ -6,13 +6,13 @@
     <title>Document</title>
   </head>
   <body>
-    <img src="" alt="" style="image-rendering: pixelated;">
-    <canvas width="94" height="62"></canvas>
+    <img src="artridgelogosmall.png" alt="" style="image-rendering: pixelated;">
+    <canvas width="20" height="20"></canvas>
 
     <script>
 
-      const width = 94;
-      const height = 62;
+      const width = 20;
+      const height = 20;
       const canvas = document.querySelector('canvas');
       const ctx = canvas.getContext('2d');
       const img = document.querySelector('img');
@@ -40,14 +40,14 @@
         ctx.drawImage(img, 0, 0);
         let finalString = ''
 
-        const pixels = ctx.getImageData(0, 0, 94, 62);
+        const pixels = ctx.getImageData(0, 0, 20, 20);
         for (let i = 0; i < pixels.data.length; i+=4) {
           let found = false;
           for (let j = 0; j < colors.length; j++) {
             const col = colors[j];
             if (pixels.data[i] === col[0] && pixels.data[i+1] === col[1] && pixels.data[i+2] === col[2]) {
               const c = j.toString();
-              finalString += c.padStart(2, '0')
+              finalString += c.padStart(2, '0');
               found = true;
             }
           }

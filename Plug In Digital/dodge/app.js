@@ -16,18 +16,6 @@
 
 let isInSettings = false;
 window.setInterval(() => {
-
-  if (pico8_gpio[127]) {
-    try {
-      if (pico8_gpio[127] === 255) {
-        parent.cmgGameEvent('start');
-      }
-    } catch (e) {
-      console.warn('cmgGameEvent not available');
-    }
-    pico8_gpio[127] = undefined;
-  }
-
   if (pico8_gpio[125] && pico8_gpio[125] === 255) {
     isInSettings = true;
     document.querySelector('.trackpad').classList.add('hide');
@@ -38,9 +26,28 @@ window.setInterval(() => {
     document.querySelector('.trackpad').classList.remove('hide');
   }
 
+  if (pico8_gpio[120]) {
+    if (pico8_gpio[120] === 255) {
+      dataLayer.push({
+        'event': 'levelCompletion',
+        'publisher':'ARTRIDGE',
+        'productKey': 'Dodge'
+      });
+    }
+    if (pico8_gpio[120] === 127) {
+      dataLayer.push({
+        'event': 'levelStart',
+        'publisher':'ARTRIDGE',
+        'productKey':'Dodge'
+      });
+    }
+    pico8_gpio[120] = undefined;
+  }
+
   const copy = JSON.parse(JSON.stringify(pico8_gpio));
 
   copy[125] = undefined;
+  copy[120] = undefined;
 
   localStorage.setItem('artridge_dodge', JSON.stringify(copy));
 }, 1);

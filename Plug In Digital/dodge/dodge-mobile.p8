@@ -19,30 +19,25 @@ function print2(_txt,_x,_y)
  ?_txt,_x,_y,7
 end
 
-size=0
-for i=0,65 do
-
-	if size<1 then
-		size+=0.045
+index=0
+logo="00000808080808080808080808080808080800000008080808080808080808080808080808080800080808080808080808080808080808080808080808080800000000000000000000000000000808080808080000070707070707070707070700080808080808000707070707070707070707070008080808080800070707070707070707070707000808080808080007070707000000000707070700080808080808000707070700000000070707070008080808080800070707070000000007070707000000000808080007070707070707070707070707070707080808000707070707070707070707070707070708080800070707070000000007070707000000000808080007070707000000000707070700080808080808000707070700000000070707070008080808080800000707070000000007070707000808080808080000000000000000000000000000080808080808080808080808080808080808080808080800080808080808080808080808080808080808000000080808080808080808080808080808080000"
+::_::
+cls()
+x,y=0,0
+for i=1,#logo,2 do
+	local col,p=sub(logo,i,i+1),min(index,60)
+	rx,ry=x+24+40*(60-p)/60,y+24-(60-p)
+	rectfill(rx,ry,rx+4,ry+4,tonum(col))
+	x+=4
+	if x>=80*p/60 then
+		x=0
+		y+=4
 	end
-	
-	cls()
-	
-	ovalfill(
-		lerp(64,6,size),
-		lerp(64,45,size),
-		lerp(64,122,size),
-		lerp(64,83,size),
-	11)
-	circfill(64,64,size*39,12)
-	
-	print2("cool",56,53,8,10)
-	print2("math",56,61,8,10)
-	print2("games",54,69,8,10)
-	
-	print2("coolmathgames.com",30,115,7,1)
-	
+end
+index+=1
+if index<=120 then
 	flip()
+	goto _
 end
 
 poke(0x5ffe,1)
@@ -268,6 +263,7 @@ function updatemenu()
   setrsy()
   sfx(55,-2)
   store(125, 255)
+  poke(0x5ff8, 127)
  end
  
  -- tosettings
@@ -339,6 +335,7 @@ function updategame()
   music(3)
   sfx(55,-2)
   store(125, 255)
+  poke(0x5ff8, 127)
  end
  canclick=not btnp(❎)
  
@@ -702,22 +699,13 @@ function updatefyou()
  end
 end
 
--- screen corners
-function fyou2()
- for x=0,1 do
- 	for y=0,1 do
-			addenemy(x*128,y*128,false,1,es,0)
-	 end
-	end
-end
-
 -- all spawn points
 function fyou()
  for s in all(spawns) do
   addenemy(s[1],s[2],false,1,es,0)
  end
 end
-
+--[[
 function checkhs()
  if score>geths() then
   for i,h in pairs(highscores) do
@@ -739,12 +727,12 @@ function geths()
 end
 
 function iscurrenths(h)
- return h[2][1]==smallsettings[2]
- and h[2][2]==smallsettings[3]
- and h[2][3]==smallsettings[4]
+ return h[1]==smallsettings[2]
+ and h[2]==smallsettings[3]
+ and h[3]==smallsettings[4]
 end
 
---[[
+]]
 function checkhs()
  if score>geths() then
   for i=0,11 do
@@ -768,9 +756,10 @@ function iscurrenths(h)
  return smallsettings[2]==highscores[h][1]
  and smallsettings[3]==highscores[h][2]
  and smallsettings[4]==highscores[h][3]
-end]]
+end
 
 function die()
+ poke(0x5ff8, 255)
  sfx(62)
  music(22)
  isdead=true

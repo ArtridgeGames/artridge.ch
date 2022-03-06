@@ -21,6 +21,7 @@ end
   setrsy()
   sfx(55,-2)
   store(125, 255)
+  poke(0x5ff8, 127)
  end
  
  -- tosettings
@@ -318,6 +319,7 @@ function updategame()
   music(3)
   sfx(55,-2)
   store(125, 255)
+  poke(0x5ff8, 127)
  end
  canclick=not (stat(34)==1 or btnp(❎))
  
@@ -697,15 +699,6 @@ function updatefyou()
  end
 end
 
--- screen corners
-function fyou2()
- for x=0,1 do
- 	for y=0,1 do
-			addenemy(x*128,y*128,false,1,es,0)
-	 end
-	end
-end
-
 -- all spawn points
 function fyou()
  for s in all(spawns) do
@@ -741,6 +734,7 @@ end
 
 function die()
  sfx(62)
+ poke(0x5ff8,255)
  isdead=true
  checkhs()
  shake+=0.07
