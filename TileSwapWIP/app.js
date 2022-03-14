@@ -1715,19 +1715,19 @@ const app = new Vue({
         {
           title: 'freeplay',
           fn: () => {
-            app.openScreen('layouts')
+            app.screen = 'layouts'
           }
         },
         {
           title: 'puzzles',
           fn: () => {
-            app.openScreen('puzzles-selection')
+            app.screen = 'puzzles-selection'
           }
         },
         {
           title: 'challenges',
           fn: () => {
-            app.openScreen('challenge-selection')
+            app.screen = 'challenge-selection'
           }
         }
       ]
@@ -1745,20 +1745,9 @@ const app = new Vue({
       if (screen !== 'challenges') {
         window.clearInterval(this.challenge.intervalId);
       }
-
-      if (screen === 'puzzles-selection') {
-        this.sortScreen(this.puzzleSorting, 'puzzles-selection');
-        updatePuzzlesContainer();
+      if (screen === "layouts") {
+        this.advanceSorting(this.layoutsSorting, "layouts");
       }
-
-      if (screen === 'layouts') {
-        this.sortScreen(this.layoutsSorting, 'layouts');
-        updateLayoutsContainer();
-      }
-
-      /* if (screen === "layouts") {
-        this.sortScreen(app.layoutsSorting, 'layouts');
-      } */
     },
     sortScreen(sort, screen, preventUpdate = false) {
       if (!screen) screen = this.screen;
@@ -2367,22 +2356,9 @@ if ('ontouchstart' in document.documentElement) {
 
     updateTileSize();
     updateLayoutsContainer();
-    updatePuzzlesContainer();
   }
   window.addEventListener('resize', func);
   window.addEventListener('load', func);
-})();
-
-(() => {
-  window.addEventListener('keyup', e => {
-    switch (e.key) {
-      case 'Escape':
-        const back = document.querySelector(`.screen.${app.screen} .back`);
-        console.log(`.screen.${app.screen} .back`)
-        if (back) back.click();
-        break;
-    }
-  });
 })();
 
 function updateTileSize() {
@@ -2454,7 +2430,7 @@ function updateLayoutsContainer() {
 
 app.sortScreen(app.layoutsSorting, "layouts")
 function updatePuzzlesContainer() {
-  const container = document.querySelector('.screen.puzzles-selection .layout-container');
+  const container = document.querySelector('.screen.puzzles .layout-container');
   container.innerHTML = "";
   for (const [i, puzzle] of puzzles.entries()) {
 
@@ -2543,7 +2519,7 @@ function updatePuzzlesContainer() {
     container.appendChild(el);
   }
 }
-app.sortScreen('puzzles-selection', app.puzzleSorting);
+app.advanceSorting(app.puzzleSorting)
 
 function updateMovesRemaining(won) {
   const h1 = document.querySelector('.puzzle-info h1');
