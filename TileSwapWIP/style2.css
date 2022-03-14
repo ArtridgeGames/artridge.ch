@@ -394,12 +394,6 @@ ul {
   list-style-position: inside;
 }
 
-.tutorial > main {
-  position: absolute;
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-}
-
 @media only screen and (orientation: portrait) {
   #controls {
     top: unset;

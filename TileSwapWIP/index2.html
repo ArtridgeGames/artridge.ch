@@ -73,14 +73,40 @@
           <p>{{score}}</p>
         </div>
         
-        <button class='sort' @click='advanceSorting()'>sort by:<br>{{layoutsSorting}}<br><span v-if="isMobile" :style="{ transform: `rotateZ(${sortOrder === 1 ? '0' : '180'}deg)` }">v</span></button>
+        <button class='sort' @click='advanceSorting()'>sort by:<br>{{layoutsSorting}}<br>{{ isMobile ? sortOrder === 1 ? '🠙' : '🠛' : ''}}</button>
         <button v-if='!isMobile' class='sort-order' @click='sortOrder *= -1; sortScreen(layoutsSorting)'>
-          {{ sortOrder === 1 ? 'ascending' : 'descending' }}
+          {{ sortOrder === 1 ? (isMobile ? '🠙' : 'ascending') : (isMobile ? '🠛' : 'descending') }}
         </button>
         <button class='back' @click='openScreen("menu")'>back</button>
         
         
         <div class='layout-container'>
+          
+          <div class='button text'
+            @click="isRandomFreeplay = true;
+                    openScreen('freeplay');
+                    randomize();">?</div>
+          
+          <div v-for="(layout, index) in layouts"
+            class="button freeplay-layout" 
+            :class="{ mastered: layout.level >= 30 }"
+            :data-index="index"
+            :data-level="layout.level"
+            @click="">
+
+            <div v-for="index in layout.width * layout.height"
+              v-show="!layout.exclude.includes(index-1)"
+              :style="{
+                transform: `translate(
+                  ${((index-1) % layout.width) * layout.iconTileSize + 50 - layout.width * layout.iconTileSize / 2}px,
+                  ${(Math.floor((index-1) / layout.width)) * layout.iconTileSize + 50 - layout.height * layout.iconTileSize / 2}px
+                )`,
+                width: `${layout.iconTileSize-1}px`,
+                height: `${layout.iconTileSize-1}px`
+              }"></div>
+
+          </div>
+
         </div>
       </div>
 
@@ -103,6 +129,10 @@
         <div id="main" :style="{ '--primary': primaryColor, '--secondary': secondaryColor }">
           <div id="container">
             
+            <div class="row" v-for="row in currentLayout.height">
+              <button class="tile" v-for="tile in currentLayout.width" :data-index="1"></button>
+            </div>
+
           </div>
         </div>
         <div id="controls" v-show="screen === 'freeplay'">
@@ -117,7 +147,7 @@
         </div>
       </div>
 
-      <div class="screen puzzles-selection" v-show="screen === 'puzzles-selection'">
+      <div class="screen puzzles" v-show="screen === 'puzzles-selection'">
         
 
         <div class="screen-header">
@@ -125,11 +155,10 @@
           <p>{{score}}</p>
         </div>
         
-        <button class='sort' @click='advanceSorting()'>sort by:<br>{{puzzleSorting}}<br><span v-if="isMobile" :style="{ transform: `rotateZ(${sortOrder === 1 ? '0' : '180'}deg)` }">v</span></button>
+        <button class='sort' @click='advanceSorting()'>sort by:<br>{{puzzleSorting}}<br>{{ isMobile ? sortOrder === 1 ? '🠙' : '🠛' : ''}}</button>
         <button v-if='!isMobile' class='sort-order' @click='sortOrder *= -1; sortScreen(puzzleSorting)'>
-          {{ sortOrder === 1 ? 'ascending' : 'descending' }}
+          {{ sortOrder === 1 ? (isMobile ? '🠙' : 'ascending') : (isMobile ? '🠛' : 'descending') }}
         </button>
-
         <button class='back' @click='openScreen("menu")'>back</button>
 
         <div class="layout-container">
@@ -243,19 +272,10 @@
         </main>
       </div>
 
-      <div class="screen tutorial" v-if="screen === 'tutorial'">
-        <main>
+      <div class="screen tutorial">
+        Tutorial
 
-          <div v-for="row, i in tutorialLayouts[tutorialLayoutIndex]">
-            <button class="tile" v-for="tile, j in row"
-              :data-col="tile === 1 ? 'white' : 'black'"
-              @click="advanceTutorial(i, j)"
-            >
-
-            </button>
-          </div>
-
-        </main>
+        <div></div>
       </div>
 
       <div class="background" @click="closePopup(0);"></div>
@@ -294,12 +314,6 @@
         <h1>are you sure you want to quit the challenge?</h1>
         <button @click="closePopup(5); openScreen('challenge-selection');">yes</button>
         <button @click="closePopup(5);">no</button>
-      </div>
-
-      <div class="background" @click="closePopup(6);"></div>
-      <div class="popup">
-        <h1>you won!</h1>
-        <button @click="closePopup(6);">yay!</button>
       </div>
 
     </div>
