@@ -2855,6 +2855,10 @@ function applyClicks(tileIndexes) {
   }
 }
 
+function solveCurrentPuzzle() {
+  applyClicks(puzzles[app.currentLayout.puzzleIndex].solution);
+}
+
 function solveGrid(grid) {
   originalGrid = copy(grid);
 
