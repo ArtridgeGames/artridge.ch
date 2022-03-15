@@ -1315,7 +1315,7 @@ const puzzles = [
         [0,1,2,0,1],
         [2,1,0,0,2]
     ],
-    solution: []
+    solution: [3,16]
   },
   {
     moves: 30,
@@ -1331,7 +1331,7 @@ const puzzles = [
         [1,1,0,1,0,1],
         [2,1,2,2,1,2]
     ],
-    solution: []
+    solution: [4,8,9,12,14,17,19,22]
   },
   {
     moves: 30,
@@ -1349,7 +1349,7 @@ const puzzles = [
         [0,1,2,1,0],
         [1,2,2,2,1]
     ],
-    solution: []
+    solution: [0,9,10,14,15,18,19,24]
   },
   {
     moves: 2,
@@ -1542,7 +1542,7 @@ const puzzles = [
         [1,1,1,1,1],
         [2,1,1,1,2]
     ],
-    solution: []
+    solution: [2,10,12,13,17]
   },
   {
     moves: 30,
@@ -1560,7 +1560,7 @@ const puzzles = [
         [2,1,2,1,2],
         [1,1,1,0,0]
     ],
-    solution: []
+    solution: [2,3,6,11,20,24]
   },
   {
     moves: 30,
@@ -1732,7 +1732,7 @@ const puzzles = [
         [2,0,2,0,2],
         [1,2,0,2,1]
     ],
-    solution: []
+    solution: [2,10,12,14,22]
   }
 ]
 puzzles.forEach((e, index) => {
