@@ -2838,6 +2838,23 @@ function solveCurrentGrid() {
   return solveGrid(getGrid());
 }
 
+function applyClicks(tileIndexes) {
+  if (tileIndexes.constructor === String) {
+    const separator = (tileIndexes.match(/[^0-7]/) || [])[0];
+    if (!separator) {
+      tileIndexes = [Number(tileIndexes)];
+    } else {
+      tileIndexes = tileIndexes.split(separator).map(Number);
+    }
+  }
+  if (tileIndexes.constructor !== Array) throw new Error('Invalid tile indexes');
+
+  const tiles = document.querySelectorAll('#main button.tile');
+  for (const index of tileIndexes) {
+    tiles[index].click()
+  }
+}
+
 function solveGrid(grid) {
   originalGrid = copy(grid);
 
