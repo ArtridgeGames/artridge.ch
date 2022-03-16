@@ -2873,7 +2873,11 @@ function applyClicks(tileIndexes) {
 
   const tiles = document.querySelectorAll('#main button.tile');
   for (const index of tileIndexes) {
-    tiles[index].click()
+    if ('ontouchstart' in document.documentElement) {
+      tiles[index].dispatchEvent(new Event('touchstart'));
+    } else {
+      tiles[index].click();
+    }
   }
 }
 
