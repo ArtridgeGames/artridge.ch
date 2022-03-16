@@ -835,6 +835,7 @@ layouts.forEach((e,index) => {
   e.completed = 0;
   e.level = 1;
   e.experience = 0;
+  if (!e.exclude) e.exclude = [];
   e.index = index;
 });
 
