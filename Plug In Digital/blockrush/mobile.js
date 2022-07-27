@@ -9,8 +9,8 @@
     || window.msAudioContext
 
   // make AudioContext a singleton so we control it
-  var ctx = new window.AudioContext
-  window.AudioContext = function() { return ctx }
+  var ctx = new AudioContext();
+  window.GameAudioContext = function() { return ctx }
 
   // create overlay
   var o = document.createElement('div')
@@ -56,7 +56,7 @@
   }
   
   if (!navIsMobile) {
-    startGame();
+    setTimeout(startGame);
   } else {
     p.onclick = startGame;
   }
@@ -75,13 +75,24 @@
     var source = ctx.createBufferSource()
     source.connect(ctx.destination)
     if (source.noteOn) source.noteOn(0)
-    else source.start(0)
+    else source.start(0);
+
+    ctx.resume();
 
     // dynamically load original script
     var s = document.createElement('script')
     
     s.setAttribute('src', 'blockrush.js')
     document.body.appendChild(s)
+
+    if (isMuted) {
+      const key = setInterval(e => {
+        if (Module.pico8ToggleSound) {
+          Module.pico8ToggleSound();
+          clearInterval(key);
+        }
+      }, 20);
+    }
 
     // and delete overlay div
     o.style.display = "none";
