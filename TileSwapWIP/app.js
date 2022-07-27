@@ -52,73 +52,73 @@ const layouts = [
   //squares
   {
     dimensions: '3x3',
-    exclude: [],
+    
     unlockCategory: 1
   },
   {
     dimensions: '4x4',
-    exclude: [],
+    
     unlockCategory: 5
   },
   {
     dimensions: '5x5',
-    exclude: [],
+    
     unlockCategory: 11
   },
   {
     dimensions: '6x6',
-    exclude: [],
+    
     unlockCategory: 19
   },
   {
     dimensions: '7x7',
-    exclude: [],
+    
     unlockCategory: 24
   },
   {
     dimensions: '8x8',
-    exclude: [],
+    
     unlockCategory: 31
   },
   {
     dimensions: '9x9',
-    exclude: [],
+    
     unlockCategory: 32
   },
   {
     dimensions: '10x10',
-    exclude: [],
+    
     unlockCategory: 35
   },
   {
     dimensions: '11x11',
-    exclude: [],
+    
     unlockCategory: 36
   },
   {
     dimensions: '12x12',
-    exclude: [],
+    
     unlockCategory: 38
   },
   //rectangles
   {
     dimensions: '3x4',
-    exclude: [],
+    
     unlockCategory: 8
   },
   {
     dimensions: '3x5',
-    exclude: [],
+    
     unlockCategory: 3
   },
   {
     dimensions: '3x6',
-    exclude: [],
+    
     unlockCategory: 20
   },
   {
     dimensions: '3x7',
-    exclude: [],
+    
     unlockCategory: 20
   },
   //diamond
@@ -1823,7 +1823,7 @@ const app = new Vue({
       colors: ['white', 'black', 'red', 'blue', 'yellow', 'MediumOrchid', 'OliveDrab', 'Teal', 'Chocolate'],
       primaryColor: 'white',
       secondaryColor: 'black',
-      hasPlayedCutscene: true,
+      hasPlayedCutscene: false,
       openedPopups: new Set(),
       tutorialLayoutIndex: 0,
       tutorialLayouts: [
@@ -2052,62 +2052,9 @@ const app = new Vue({
         } else {
           this.puzzleSorting = sortings[(sortings.indexOf(this.puzzleSorting) + 1) % sortings.length];
         }
-        this.sortScreen(this.puzzleSorting, this.screen);
-
-        
+        this.sortScreen(this.puzzleSorting, this.screen); 
         return;
       }
-
-
-      /*if (menu === "puzzles") {
-    
-        const sortings = ['difficulty', 'difficulty', 'completion', 'completion'];
-    
-        if (sorting === 'switch') {
-          sorting = sortings[(sortings.indexOf(this.puzzleSorting) + 1) % 4];
-          
-          
-          if (this.isMobile) {
-            this.sortOrder *= -1;
-            if (this.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
-          }
-          
-          this.puzzleSorting = sorting;
-        }
-    
-        if (sorting === "difficulty") {
-          puzzles.sort((a, b) => (a.solution.length - b.solution.length) * this.sortOrder);
-        } else if (sorting === "completion") {
-          puzzles.sort((a, b) => (a.solution.length - b.solution.length) * this.sortOrder);
-          puzzles.sort((a, b) => (a.completed - b.completed) * this.sortOrder);
-        }
-    
-        updatePuzzlesContainer();
-      } else if (menu === 'layouts') {
-
-        const sortings = ['size', 'size', 'completion', 'completion', 'size', 'size'];
-    
-        if (sorting === 'switch') {
-          sorting = sortings[(sortings.indexOf(this.layoutsSorting) + 1) % 4];
-          
-          
-          if (this.isMobile) {
-            this.sortOrder *= -1;
-            if (this.sortOrder === 1) sorting = sortings[(sortings.indexOf(sorting) + 2) % 4];
-          }
-          
-          this.layoutsSorting = sorting;
-        }
-    
-        if (sorting === 'size') {
-          layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length)) * this.sortOrder);
-        } else if (sorting === 'completion') {
-          layouts.sort((a, b) => ((a.width * a.height - a.exclude.length) - (b.width * b.height - b.exclude.length))  * this.sortOrder);
-          layouts.sort((a, b) => (a.completed - b.completed) * -1 * this.sortOrder);   
-        }
-    
-        updateLayoutsContainer();
-      }*/
     },
     formatTime(time) {
       const date = new Date(time * 1000);
@@ -2271,15 +2218,16 @@ const app = new Vue({
       console.log(res.grid);
       this.tutorialLayouts[this.tutorialLayoutIndex] = res.grid;
       const tiles = document.querySelectorAll('.tutorial button.tile');
-      for (const index of res.affectedTiles) {
+      /*for (const index of res.affectedTiles) {
         const duration = 0.3;
         const delay = 0.08;
         TweenMax.to(tiles[index], duration, {scaleY: 1.6, ease: Expo.easeOut});
         TweenMax.to(tiles[index], duration, {scaleX: 1.2, scaleY: 1, ease: Back.easeOut, easeParams: [3], delay: delay});
         TweenMax.to(tiles[index], duration * 1.25, {scaleX: 1, scaleY: 1, ease: Back.easeOut, easeParams: [6], delay: delay * 3 });
-      }
-
+      }*/
+      
       this.$nextTick(() => {
+        this.$forceUpdate();
         let won = true;
         for (const tile of tiles) {
           if (tile.getAttribute('data-col') === 'black') {
@@ -2299,6 +2247,9 @@ const app = new Vue({
       if (this.challenge.baseMoves === 0) return 0;
       if (this.challenge.endless) return this.challenge.completedMoves;
       return Math.floor(((this.challenge.baseMoves - this.challenge.remainingMoves - this.challenge.lastDifficulty) / this.challenge.baseMoves) * 100);
+    },
+    tutorialLayout() {
+      return this.tutorialLayouts[this.tutorialLayoutIndex];
     }
   },
   watch: {
