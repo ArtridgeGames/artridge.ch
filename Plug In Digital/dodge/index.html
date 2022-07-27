@@ -5,8 +5,8 @@
     <script>dataLayer = [];
       dataLayer.push({
       'event': 'pageLoad',
-      'publisher':'ARTRIDGE',
-      'productKey': 'Dodge'
+      'publisher':'PID',
+      'productKey': 'dodge'
       });
       </script>
       <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -31,8 +31,8 @@
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <script>dataLayer = [];
     dataLayer.push({
-    'event': 'pageLoad',
-    'productKey': 'Dodge'
+      'event': 'pageLoad',
+      'productKey': 'dodge'
     });
     </script>
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -43,7 +43,7 @@
     <!-- End Google Tag Manager -->
 
   <button onclick="toggleSound(this)" class="show-if-not-touch options">
-    <img src="images/DodgeSoundOn.png" alt="Sound Options">
+    <img src="images/DodgeSoundOff.png" alt="Sound Options">
   </button>
   <div class="trackpad show-if-touch" id="trackpad"><img class="show-if-touch" id="touch-cursor" src="images/cursor.png"></img><span id="move-indicator">MOVE HERE</span></div>
 	<div id="touch-buttons" class="touch-buttons show-if-touch">
@@ -60,13 +60,7 @@
   </div>
 	<center><div id="canvas_container" style="width:512px;">
   <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-  <script>
-    function toggleSound(element) {
-      Module.pico8ToggleSound();
-      element.children[0].classList.toggle("fa-volume-mute");
-      element.children[0].classList.toggle("fa-volume-up");
-    }
-  </script>
+
   <script type="text/javascript">
 
 		var canvas = document.getElementById("canvas");

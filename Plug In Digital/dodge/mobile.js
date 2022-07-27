@@ -56,7 +56,7 @@
   }
   
   if (!navIsMobile) {
-    startGame();
+    setTimeout(startGame);
   } else {
     p.onclick = startGame;
   }
@@ -84,6 +84,15 @@
     
     s.setAttribute('src', file)
     document.body.appendChild(s)
+
+    if (isMuted) {
+      const key = setInterval(e => {
+        if (Module.pico8ToggleSound) {
+          Module.pico8ToggleSound();
+          clearInterval(key);
+        }
+      }, 20);
+    }
 
     // and delete overlay div
     o.style.display = "none";

@@ -80,14 +80,15 @@ function isDevMobile() {
 }
 
 ((context) => {
+  if (context.state !== "suspended") return;
+  const b = document.body;
   const events = ["touchstart", "touchend", "mousedown", "keydown", "click"];
-  events.forEach(e => document.addEventListener(e, unlock, false));
+  events.forEach(e => b.addEventListener(e, unlock, false));
   function unlock() {
-    console.log('UNLOCKING');
     context.resume().then(clean);
   }
-  function clean() {events.forEach(e => document.removeEventListener(e, unlock));}
-})(GameAudioContext());
+  function clean() {events.forEach(e => b.removeEventListener(e, unlock));}
+})(window.GameAudioContext());
 
 var canvasContainer = document.getElementById("canvas");
 var rect = canvasContainer.getBoundingClientRect();
@@ -240,18 +241,9 @@ function toggleSound(element) {
       img.src = "images/soundOn.png";
     } else {
       img.src = "images/soundOff.png";
-      GameAudioContext().resume();
     }
   }
 }
-
-window.addEventListener('click', e=> {
-  var buffer = GameAudioContext().createBuffer(1, 1, 22050)
-  var source = GameAudioContext().createBufferSource()
-  source.connect(GameAudioContext().destination)
-  if (source.noteOn) source.noteOn(0)
-  else source.start(0);
-})
 
 var isPaused = false;
 var btnP = document.getElementById("btn-p");

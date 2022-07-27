@@ -506,8 +506,8 @@ function drawstart()
 		if (rnd()<0.001) spawnwireparticle(w)
 	end
 	
-	print("  press any button to start  ",6,88,7)
-	print("-                           -",6,88,6)
+	print("   press ❎ to start   ",18,88,7)
+	print("-                     -",18,88,6)
 	print("eddy rashed",42,102,7)
 	print("oskar zanota",40,109,7)
 	print("quentin rassat",36,116,7)

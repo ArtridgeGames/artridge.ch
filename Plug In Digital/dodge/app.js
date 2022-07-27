@@ -30,15 +30,15 @@ window.setInterval(() => {
     if (pico8_gpio[120] === 255) {
       dataLayer.push({
         'event': 'levelCompletion',
-        'publisher':'ARTRIDGE',
-        'productKey': 'Dodge'
+        'publisher':'PID',
+        'productKey': 'dodge'
       });
     }
     if (pico8_gpio[120] === 127) {
       dataLayer.push({
         'event': 'levelStart',
-        'publisher':'ARTRIDGE',
-        'productKey':'Dodge'
+        'publisher':'PID',
+        'productKey':'dodge'
       });
     }
     pico8_gpio[120] = undefined;
@@ -51,6 +51,21 @@ window.setInterval(() => {
 
   localStorage.setItem('artridge_dodge', JSON.stringify(copy));
 }, 1);
+
+(() => {
+  const gamepad = document.querySelector('.gamepad');
+  const buttons = document.querySelector('.touch-buttons');
+  const trackpad = document.querySelector('.trackpad');
+
+  const events = ['touchstart', 'touchend', 'touchmove', 'touchcancel'];
+  const preventDefault = e => e.preventDefault();
+
+  for (const event of events) {
+    gamepad.addEventListener(event, preventDefault);
+    buttons.addEventListener(event, preventDefault);
+    trackpad.addEventListener(event, preventDefault);
+  }
+})();
 
 function isLandscape() {
   return window.innerWidth > window.innerHeight;
@@ -100,9 +115,9 @@ function updateBtns() {
   var rect = canvasContainer.getBoundingClientRect();
   distance = rect.right / (isLandscape() && 4.85 || 2.2);
 
-  if (isLandscape() && navigator.userAgent.match(/iPhone/i)) {
-    distance = rect.right / 3.6;
-  }
+  // if (isLandscape() && navigator.userAgent.match(/iPhone/i)) {
+  //   distance = rect.right / 3.6;
+  // }
 
   // var distance = isLandscape() ? (window.innerWidth - rect.width) / 2 - 30 : window.innerWidth / 2 - 30;
 
@@ -140,30 +155,25 @@ function updateBtns() {
   }
   
   // ----------------- DISPLAY TOUCH CONTROLS? ----------------- %>
-if(isDevMobile()) {
-  document.body.className = " touch-supported";
-  window.TOUCH = true;
-  var size = isLandscape() && "150px" || "27.7px";
-  var offset = isLandscape() && "80px" || "10px";
-  if (isLandscape() && navigator.userAgent.match(/iPhone/i)) {
-    size = "85px";
-    offset = "30px";
+  if(isDevMobile()) {
+    document.body.className = " touch-supported";
+    window.TOUCH = true;
+    var size = isLandscape() && "100px" || "27.7px";
+    var offset = isLandscape() && "20px" || "10px";
+    document.documentElement.style.setProperty("--pico-display", "block")
     document.documentElement.style.setProperty('--canvas-size', size);
+    document.documentElement.style.setProperty('--canvas-border', '0px');
+    document.documentElement.style.setProperty('--canvas-offset', offset);
+    var isMobile = true;
+  } else {
+    //document.documentElement.setProperty("--pico-display", "none")
+    document.body.className = " touch-not-supported";
+    document.documentElement.style.setProperty('--canvas-size', '0px');
+    document.documentElement.style.setProperty('--canvas-border', '0px');
+    document.getElementById("canvas").style.border = "none";
+    document.documentElement.style.setProperty('--canvas-offset', '0px');
+    var isMobile = false;
   }
-  document.documentElement.style.setProperty("--pico-display", "block")
-  document.documentElement.style.setProperty('--canvas-size', size);
-  document.documentElement.style.setProperty('--canvas-border', '0px');
-  document.documentElement.style.setProperty('--canvas-offset', offset);
-  var isMobile = true;
-} else {
-  //document.documentElement.setProperty("--pico-display", "none")
-  document.body.className = " touch-not-supported";
-  document.documentElement.style.setProperty('--canvas-size', '0px');
-  document.documentElement.style.setProperty('--canvas-border', '0px');
-  document.getElementById("canvas").style.border = "none";
-  document.documentElement.style.setProperty('--canvas-offset', '0px');
-  var isMobile = false;
-}
 
   if (isMobile) {
     var element = document.getElementById('canvas');
@@ -267,10 +277,30 @@ btnX.addEventListener("touchstart", (e)=>{
   } else {
     Module.pico8ToggleSound();
     isMuted = !isMuted;
-    btnX.style.backgroundImage = isMuted && "url(images/DodgeSoundOff.png)" || "url(images/DodgeSoundOn.png)"
+    localStorage.setItem('artridge_dodge_muted', isMuted);
+    btnX.style.backgroundImage = isMuted && "url(images/DodgeSoundOn.png)" || "url(images/DodgeSoundOff.png)"
   }
 })
-var isMuted = false;
+const stored = localStorage.getItem('artridge_dodge_muted');
+var isMuted = stored === null ? false : JSON.parse(stored);
+if (isMuted) {
+  const img = document.querySelector('.options').children[0];
+  img.src = 'images/DodgeSoundOn.png';
+}
+function toggleSound(element) {
+  console.log('toggle sound')
+  if (pico8_gpio[126]==1) {
+    Module.pico8ToggleSound();
+    isMuted = !isMuted;
+    localStorage.setItem('artridge_dodge_muted', isMuted);
+    const img = element.children[0];
+    if (isMuted) {
+      img.src = "images/DodgeSoundOn.png";
+    } else {
+      img.src = "images/DodgeSoundOff.png";
+    }
+  }
+}
 var isPaused = false;
 var btnP = document.getElementById("btn-p");
 btnP.style.backgroundImage = "url(images/DodgePause.png)"

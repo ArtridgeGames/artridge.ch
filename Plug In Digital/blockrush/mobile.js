@@ -9,7 +9,7 @@
     || window.msAudioContext
 
   // make AudioContext a singleton so we control it
-  var ctx = new AudioContext();
+  var ctx = new window.AudioContext;
   window.GameAudioContext = function() { return ctx }
 
   // create overlay
@@ -76,8 +76,6 @@
     source.connect(ctx.destination)
     if (source.noteOn) source.noteOn(0)
     else source.start(0);
-
-    ctx.resume();
 
     // dynamically load original script
     var s = document.createElement('script')
