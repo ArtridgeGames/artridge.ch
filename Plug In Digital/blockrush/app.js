@@ -13,6 +13,8 @@
 
 })();
 
+let canComplete = true;
+
 window.setInterval(() => {
 
   if (pico8_gpio[127]) {
@@ -20,20 +22,24 @@ window.setInterval(() => {
       console.log('LEVEL START');
       dataLayer.push({
         'event': 'levelStart',
-        'publisher':'ARTRIDGE',
-        'productKey':'BlockRush'
+        'publisher':'PID',
+        'productKey':'blockRush'
       });
     }
     pico8_gpio[127] = undefined;
   }
 
   if (pico8_gpio[126]) {
-    console.log('LEVEL COMPLETE')
-    dataLayer.push({
-      'event': 'levelCompletion',
-      'publisher':'ARTRIDGE',
-      'productKey': 'BlockRush'
-    });
+    if (canComplete) {
+      canComplete = false;
+      console.log('LEVEL COMPLETE');
+      dataLayer.push({
+        'event': 'levelCompletion',
+        'publisher':'PID',
+        'productKey': 'blockRush'
+      });
+      setTimeout(e => canComplete = true, 1000);
+    }
     pico8_gpio[126] = undefined;  
   }
 
@@ -44,6 +50,20 @@ window.setInterval(() => {
 function isLandscape() {
   return window.innerWidth > window.innerHeight;
 }
+
+(() => {
+  const gamepad = document.querySelector('.gamepad');
+  const buttons = document.querySelector('.touch-buttons');
+
+  const events = ['touchstart', 'touchend', 'touchmove', 'touchcancel'];
+  const preventDefault = e => e.preventDefault();
+
+  for (const event of events) {
+    gamepad.addEventListener(event, preventDefault);
+    buttons.addEventListener(event, preventDefault);
+  }
+
+})();
 
 function isDevMobile() {
   let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
@@ -60,15 +80,14 @@ function isDevMobile() {
 }
 
 ((context) => {
-  if (context.state !== "suspended") return;
-  const b = document.body;
   const events = ["touchstart", "touchend", "mousedown", "keydown", "click"];
-  events.forEach(e => b.addEventListener(e, unlock, false));
+  events.forEach(e => document.addEventListener(e, unlock, false));
   function unlock() {
+    console.log('UNLOCKING');
     context.resume().then(clean);
   }
-  function clean() {events.forEach(e => b.removeEventListener(e, unlock));}
-})(window.AudioContext());
+  function clean() {events.forEach(e => document.removeEventListener(e, unlock));}
+})(GameAudioContext());
 
 var canvasContainer = document.getElementById("canvas");
 var rect = canvasContainer.getBoundingClientRect();
@@ -123,7 +142,7 @@ function updateBtns() {
   
   // ----------------- DISPLAY TOUCH CONTROLS? ----------------- %>
   if(isDevMobile()) {
-    document.body.className = " touch-supported";
+    document.body.classList.add("touch-supported");
     window.TOUCH = true;
     var size = isLandscape() ? "150px" : "27.7px";
     var offset = isLandscape() ? "30px" : "11px";
@@ -137,7 +156,7 @@ function updateBtns() {
     document.documentElement.style.setProperty("--canvas-offset", offset);
     var isMobile = true;
   } else {
-    document.body.className = "touch-not-supported";
+    document.body.classList.add("touch-not-supported");
     document.body.style.overflowY = document.fullscreenElement ? "hidden" : "scroll";
     document.documentElement.style.setProperty('--canvas-size', '0px');
     document.documentElement.style.setProperty('--canvas-border', '0px');
@@ -201,10 +220,39 @@ btnX.addEventListener("touchstart", (e)=>{
   } else {
     Module.pico8ToggleSound();
     isMuted = !isMuted;
-    btnX.style.backgroundImage = isMuted && "url(images/soundOff.png)" || "url(images/soundOn.png)"
+    localStorage.setItem('artridge_blockrush_muted', isMuted);
+    btnX.style.backgroundImage = isMuted && "url(images/soundOn.png)" || "url(images/soundOff.png)"
   }
 })
-var isMuted = false;
+const stored = localStorage.getItem('artridge_blockrush_muted');
+var isMuted = stored === null ? false : JSON.parse(stored);
+if (isMuted) {
+  const img = document.querySelector('.options').children[0];
+  img.src = 'images/soundOn.png';
+}
+function toggleSound(element) {
+  if (pico8_gpio[0] === 1) {
+    Module.pico8ToggleSound();
+    isMuted = !isMuted;
+    localStorage.setItem('artridge_blockrush_muted', isMuted);
+    const img = element.children[0];
+    if (isMuted) {
+      img.src = "images/soundOn.png";
+    } else {
+      img.src = "images/soundOff.png";
+      GameAudioContext().resume();
+    }
+  }
+}
+
+window.addEventListener('click', e=> {
+  var buffer = GameAudioContext().createBuffer(1, 1, 22050)
+  var source = GameAudioContext().createBufferSource()
+  source.connect(GameAudioContext().destination)
+  if (source.noteOn) source.noteOn(0)
+  else source.start(0);
+})
+
 var isPaused = false;
 var btnP = document.getElementById("btn-p");
 btnP.style.backgroundImage = "url(images/pause.png)"
@@ -218,7 +266,7 @@ btnP.addEventListener("touchstart", (e)=>{
     startedGame = true;
     isPaused = !isPaused;
     if (isPaused) {
-      btnX.style.backgroundImage = isMuted && "url(images/soundOff.png)" || "url(images/soundOn.png)"
+      btnX.style.backgroundImage = isMuted && "url(images/soundOn.png)" || "url(images/soundOff.png)"
       btnO.style.backgroundImage = "url(images/down.png)"
       btnS.style.backgroundImage = "url(images/up.png)"
       btnP.style.backgroundImage = "url(images/play.png)"

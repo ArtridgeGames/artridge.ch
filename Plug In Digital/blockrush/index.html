@@ -5,9 +5,9 @@
     <!-- Google Tag Manager -->
     <script>dataLayer = [];
       dataLayer.push({
-      'event': 'pageLoad',
-      'publisher':'ARTRIDGE',
-      'productKey': 'BlockRush'
+        'event': 'pageLoad',
+        'publisher':'PID',
+        'productKey': 'blockRush'
       });
       </script>
       <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -17,8 +17,6 @@
       })(window,document,'script','dataLayer','GTM-K74X66');</script>
       <!-- End Google Tag Manager -->
   
-
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Block Rush</title>
@@ -33,8 +31,8 @@
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <script>dataLayer = [];
       dataLayer.push({
-      'event': 'pageLoad',
-      'productKey': 'BlockRush'
+        'event': 'pageLoad',
+        'productKey': 'blockRush'
       });
       </script>
       <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -45,7 +43,7 @@
       <!-- End Google Tag Manager -->
 
     <button onclick="toggleSound(this)" class="show-if-not-touch options">
-      <img src="images/soundOn.png" alt="Sound Options">
+      <img src="images/soundOff.png" alt="Sound Options">
     </button>
     <div class="gamepad show-if-touch" id="gamepad">
       <div class="pico-btn up"></div>
@@ -59,19 +57,9 @@
       <button style="border-right-width: calc(var(--border-size) / 2); border-top-width: calc(var(--border-size) / 2);"class="pico-btn" id="btn-x"></button>
       <button style="border-left-width: calc(var(--border-size) / 2); border-top-width: calc(var(--border-size) / 2);"class="pico-btn" id="btn-o"></button>
     </div>
-    <center><div id="canvas_container" style="width:512px;">
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-    <script>
-      function toggleSound(element) {
-        Module.pico8ToggleSound();
-        let img = element.children[0];
-        if (img.src.includes("soundOff.png")) {
-          img.src = "images/soundOn.png";
-        } else {
-          img.src = "images/soundOff.png";
-        }
-      }
-    </script>
+    <center>
+    <div id="canvas_container" style="width:512px;">
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
     <script type="text/javascript">
 
       var canvas = document.getElementById("canvas");

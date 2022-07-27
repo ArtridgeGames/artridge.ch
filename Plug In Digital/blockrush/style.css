@@ -59,6 +59,9 @@ center > div > canvas#canvas {
   cursor: none;
   box-sizing: border-box;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 .description {
   color: white;
   line-height: 31px;
