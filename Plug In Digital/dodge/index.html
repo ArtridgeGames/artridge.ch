@@ -4,9 +4,9 @@
     <!-- Google Tag Manager -->
     <script>dataLayer = [];
       dataLayer.push({
-      'event': 'pageLoad',
-      'publisher':'PID',
-      'productKey': 'dodge'
+        'event': 'pageLoad',
+        'publisher':'PID',
+        'productKey': 'dodge'
       });
       </script>
       <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -22,6 +22,7 @@
     <meta name="description" content="">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" href="style.css"></link>
   </head>
 <body>
@@ -107,6 +108,14 @@
 	<br>	
 	</div></center>
 	<br><br>
+  <script>
+    const stored = localStorage.getItem('artridge_dodge_muted');
+    window.isMuted = stored === null ? false : JSON.parse(stored);
+    if (isMuted) {
+      const img = document.querySelector('.options').children[0];
+      img.src = 'images/DodgeSoundOn.png';
+    }
+  </script>
   <script src="mobile.js"></script>
   <script src="app.js"></script>
   <!-- iOS Zoom on rotation bug fix -->

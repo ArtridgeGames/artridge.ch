@@ -191,7 +191,8 @@ function updateBtns() {
 }
 
 window.addEventListener('orientationchange', () => {
-  window.setTimeout(updateBtns, 100);
+  console.log('ORIENTATIONCHANGE');
+  // window.setTimeout(updateBtns, 100);
 });
 window.onload = updateBtns();
 updateBtns();
@@ -226,7 +227,8 @@ function updateTrackpad(e) {
 }
 
 window.addEventListener("resize", function() {
-  window.setTimeout(updateBtns, 500);
+  console.log('RESIZE');
+  // window.setTimeout(updateBtns, 500);
 }, false);
 
 var startedGame = false;
@@ -281,12 +283,7 @@ btnX.addEventListener("touchstart", (e)=>{
     btnX.style.backgroundImage = isMuted && "url(images/DodgeSoundOn.png)" || "url(images/DodgeSoundOff.png)"
   }
 })
-const stored = localStorage.getItem('artridge_dodge_muted');
-var isMuted = stored === null ? false : JSON.parse(stored);
-if (isMuted) {
-  const img = document.querySelector('.options').children[0];
-  img.src = 'images/DodgeSoundOn.png';
-}
+
 function toggleSound(element) {
   console.log('toggle sound')
   if (pico8_gpio[126]==1) {
