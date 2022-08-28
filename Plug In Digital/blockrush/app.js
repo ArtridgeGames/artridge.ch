@@ -225,12 +225,7 @@ btnX.addEventListener("touchstart", (e)=>{
     btnX.style.backgroundImage = isMuted && "url(images/soundOn.png)" || "url(images/soundOff.png)"
   }
 })
-const stored = localStorage.getItem('artridge_blockrush_muted');
-var isMuted = stored === null ? false : JSON.parse(stored);
-if (isMuted) {
-  const img = document.querySelector('.options').children[0];
-  img.src = 'images/soundOn.png';
-}
+
 function toggleSound(element) {
   if (pico8_gpio[0] === 1) {
     Module.pico8ToggleSound();

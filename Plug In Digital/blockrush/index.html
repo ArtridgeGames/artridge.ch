@@ -23,6 +23,7 @@
     <meta name="description" content="">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
     <link rel="stylesheet" href="style.css"></link>
   </head>
   <body>
@@ -98,6 +99,15 @@
     <script>
       if (navigator.userAgent.match(/Android/i)) {
         ScreenOrientation.lock("portrait-primary");
+      }
+    </script>
+
+    <script>
+      const stored = localStorage.getItem('artridge_blockrush_muted');
+      window.isMuted = stored === null ? false : JSON.parse(stored);
+      if (isMuted) {
+        const img = document.querySelector('.options').children[0];
+        img.src = 'images/soundOn.png';
       }
     </script>
     

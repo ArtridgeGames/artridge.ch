@@ -192,7 +192,7 @@ function updateBtns() {
 
 window.addEventListener('orientationchange', () => {
   console.log('ORIENTATIONCHANGE');
-  // window.setTimeout(updateBtns, 100);
+  window.setTimeout(updateBtns, 100);
 });
 window.onload = updateBtns();
 updateBtns();
@@ -228,7 +228,7 @@ function updateTrackpad(e) {
 
 window.addEventListener("resize", function() {
   console.log('RESIZE');
-  // window.setTimeout(updateBtns, 500);
+  window.setTimeout(updateBtns, 500);
 }, false);
 
 var startedGame = false;
