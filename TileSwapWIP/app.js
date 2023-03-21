@@ -1848,7 +1848,7 @@ const app = new Vue({
       colors: ['white', 'black', 'red', 'blue', 'yellow', 'MediumOrchid', 'OliveDrab', 'Teal', 'Chocolate'],
       primaryColor: 'white',
       secondaryColor: 'black',
-      hasPlayedCutscene: false,
+      hasPlayedCutscene: true,
       openedPopups: new Set(),
       tutorialLayoutIndex: 0,
       tutorialLayouts: [
