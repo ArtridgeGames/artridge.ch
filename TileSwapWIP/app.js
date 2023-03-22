@@ -826,6 +826,10 @@ const layouts = [
   {
     dimensions: '13x13',
     unlockCategory: 39
+  },
+  {
+    dimensions: '6x6',
+    exclude: [0, 1, 9, 10, 11, 15, 16, 17, 24, 25, 30, 31, 33, 34]
   }
 ];
 layouts.forEach((e,index) => {
